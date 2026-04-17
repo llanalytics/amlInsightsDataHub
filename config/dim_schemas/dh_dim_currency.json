@@ -1,0 +1,22 @@
+{
+  "required": ["currency_code", "currency_name"],
+  "properties": {
+    "currency_code": {
+      "type": "string",
+      "maxLength": 20,
+      "dq": {
+        "not_null": true,
+        "regex": "^[A-Z]{3}$",
+        "lookup_name": "Currency_Code"
+      }
+    },
+    "currency_name": {
+      "type": "string",
+      "maxLength": 120,
+      "dq": {
+        "not_null": true
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,4 @@
+transaction_key,account_key,transaction_type_code,country_code,currency_code,counterparty_account_key,sub_account_key,amount,transaction_ts
+TXN-0001,ACCT-001,CASH_DEP,US,USD,CP-889,SUB-001,1200.50,2026-04-17T09:00:00Z
+TXN-0002,ACCT-001,CASH_WDR,US,USD,CP-902,SUB-002,300.00,2026-04-17T10:00:00Z
+TXN-0003,ACCT-900,CASH_DEP,GB,GBP,CP-990,,10.00,2026-04-17T11:30:00Z

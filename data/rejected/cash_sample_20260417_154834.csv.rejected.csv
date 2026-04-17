@@ -1,0 +1,2 @@
+transaction_key,household_key,household_name,customer_key,customer_name,customer_segment,associated_party_key,associated_party_name,account_key,account_type,sub_account_key,sub_account_type,country_code,country_name,currency_code,currency_name,counterparty_account_key,counterparty_name,transaction_type_code,transaction_type_description,amount,transaction_ts
+TXN-0003,HH-002,Household 2,CUST-009,Alex Smith,Commercial,AP-009,North Supply,ACCT-900,Corporate,, ,GB,United Kingdom,GBP,Pound Sterling,CP-990,Transit Hub,CASH_DEP,Cash Deposit,-10.00,2026-04-17T11:30:00Z

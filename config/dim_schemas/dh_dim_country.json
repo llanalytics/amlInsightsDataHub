@@ -1,0 +1,22 @@
+{
+  "required": ["country_code", "country_name"],
+  "properties": {
+    "country_code": {
+      "type": "string",
+      "maxLength": 20,
+      "dq": {
+        "not_null": true,
+        "regex": "^[A-Z]{2,3}$",
+        "lookup_name": "Country_Code"
+      }
+    },
+    "country_name": {
+      "type": "string",
+      "maxLength": 120,
+      "dq": {
+        "not_null": true
+      }
+    }
+  },
+  "additionalProperties": false
+}

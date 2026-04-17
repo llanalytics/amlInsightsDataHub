@@ -1,0 +1,21 @@
+{
+  "required": ["associated_party_key", "name"],
+  "properties": {
+    "associated_party_key": {
+      "type": "string",
+      "maxLength": 100,
+      "dq": {
+        "not_null": true,
+        "regex": "^AP-[0-9]{3,}$"
+      }
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 120,
+      "dq": {
+        "not_null": true
+      }
+    }
+  },
+  "additionalProperties": false
+}

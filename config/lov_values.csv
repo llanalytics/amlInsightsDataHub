@@ -1,0 +1,14 @@
+lookup_name,valid_value,description,is_active
+Country_Code,US,United States alpha-2,true
+Country_Code,GB,United Kingdom alpha-2,true
+Country_Code,USA,United States alpha-3,true
+Currency_Code,USD,US Dollar,true
+Currency_Code,GBP,Pound Sterling,true
+Customer_Segment,Retail,Retail segment,true
+Customer_Segment,Commercial,Commercial segment,true
+Account_Type,Checking,Checking account,true
+Account_Type,Corporate,Corporate account,true
+Sub_Account_Type,Online,Online channel,true
+Sub_Account_Type,Branch,Branch channel,true
+Relationship_Type,Primary,Primary account relationship,true
+Relationship_Type,Secondary,Secondary account relationship,true

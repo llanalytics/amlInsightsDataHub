@@ -1,0 +1,22 @@
+{
+  "required": ["sub_account_key", "sub_account_type"],
+  "properties": {
+    "sub_account_key": {
+      "type": "string",
+      "maxLength": 100,
+      "dq": {
+        "not_null": true,
+        "regex": "^SUB-[0-9]{3,}$"
+      }
+    },
+    "sub_account_type": {
+      "type": "string",
+      "maxLength": 80,
+      "dq": {
+        "not_null": true,
+        "lookup_name": "Sub_Account_Type"
+      }
+    }
+  },
+  "additionalProperties": false
+}

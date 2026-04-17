@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AML Data Hub</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 1.5rem; }
+    h1, h2 { margin-bottom: 0.5rem; }
+    .controls { margin: 1rem 0; }
+    button { padding: 0.5rem 0.9rem; cursor: pointer; }
+    .table-wrap { overflow: auto; max-height: 340px; border: 1px solid #eee; }
+    table { border-collapse: collapse; width: max-content; min-width: 100%; margin: 0; }
+    th, td { border: 1px solid #ccc; padding: 0.45rem; text-align: left; font-size: 0.92rem; }
+    .grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    .card { border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; }
+    .muted { color: #666; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <h1>AML Data Hub</h1>
+  <p class="muted">Landing ingestion, SCD dimension processing, fact loading, and DQ reporting.</p>
+
+  <div class="controls">
+    <button onclick="runJob()">Run Cash Pipeline</button>
+    <span id="runStatus" class="muted"></span>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Recent Job Runs</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Run ID</th><th>Status</th><th>Started</th><th>Ended</th><th>Files</th><th>Read</th><th>Loaded</th><th>Rejected</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in latest_runs %}
+            <tr>
+              <td>{{ r.job_run_id }}</td>
+              <td>{{ r.status }}</td>
+              <td>{{ r.started_at }}</td>
+              <td>{{ r.ended_at or '' }}</td>
+              <td>{{ r.files_processed }}/{{ r.files_seen }}</td>
+              <td>{{ r.records_read }}</td>
+              <td>{{ r.records_loaded }}</td>
+              <td>{{ r.records_rejected }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Recent File Stats</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Run ID</th><th>File</th><th>Read</th><th>Loaded</th><th>Rejected</th><th>Processed At</th></tr></thead>
+          <tbody>
+            {% for f in latest_files %}
+            <tr>
+              <td>{{ f.job_run_id }}</td>
+              <td>{{ f.input_file_name }}</td>
+              <td>{{ f.records_read }}</td>
+              <td>{{ f.records_loaded }}</td>
+              <td>{{ f.records_rejected }}</td>
+              <td>{{ f.processed_at }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Recent Data Quality Results</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Run ID</th><th>File</th><th>Row</th><th>Rule</th><th>Severity</th><th>Action</th><th>Message</th><th>At</th></tr></thead>
+          <tbody>
+            {% for d in latest_dq %}
+            <tr>
+              <td>{{ d.job_run_id }}</td>
+              <td>{{ d.input_file_name }}</td>
+              <td>{{ d.row_number }}</td>
+              <td>{{ d.rule_name }}</td>
+              <td>{{ d.severity }}</td>
+              <td>{{ d.action_taken }}</td>
+              <td>{{ d.message }}</td>
+              <td>{{ d.created_at }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function runJob() {
+      const statusEl = document.getElementById('runStatus');
+      statusEl.textContent = 'Running...';
+      try {
+        const resp = await fetch('/api/jobs/run', { method: 'POST' });
+        const payload = await resp.json();
+        if (!resp.ok) throw new Error(payload.detail || 'run failed');
+        statusEl.textContent = `Done. run=${payload.job_run_id}, loaded=${payload.records_loaded}, rejected=${payload.records_rejected}`;
+        window.location.reload();
+      } catch (err) {
+        statusEl.textContent = `Failed: ${err.message}`;
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "required": ["counterparty_account_key", "counterparty_name"],
+  "properties": {
+    "counterparty_account_key": {
+      "type": "string",
+      "maxLength": 100,
+      "dq": {
+        "not_null": true,
+        "regex": "^CP-[0-9]{3,}$"
+      }
+    },
+    "counterparty_name": {
+      "type": "string",
+      "maxLength": 120,
+      "dq": {
+        "not_null": true
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,21 @@
+{
+  "required": ["household_key", "name"],
+  "properties": {
+    "household_key": {
+      "type": "string",
+      "maxLength": 100,
+      "dq": {
+        "not_null": true,
+        "regex": "^HH-[0-9]{3,}$"
+      }
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 120,
+      "dq": {
+        "not_null": true
+      }
+    }
+  },
+  "additionalProperties": false
+}

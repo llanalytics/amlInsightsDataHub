@@ -1,0 +1,3 @@
+account_key,amount,counterparty_account_key,country_code,currency_code,sub_account_key,transaction_key,transaction_ts,transaction_type_code,_error
+ACCT-001,1200.50,CP-889,US,USD,SUB-001,TXN-0001,2026-04-17T09:00:00Z,CASH_DEP,Duplicate transaction_key 'TXN-0001' already exists in dh_fact_cash.
+ACCT-001,300.00,CP-902,US,USD,SUB-002,TXN-0002,2026-04-17T10:00:00Z,CASH_WDR,Duplicate transaction_key 'TXN-0002' already exists in dh_fact_cash.

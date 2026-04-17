@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AML Data Hub API Browser</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 1rem; }
+    h1 { margin-bottom: 0.4rem; }
+    .muted { color: #666; margin-bottom: 1rem; }
+    .row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+    button { padding: 0.45rem 0.8rem; cursor: pointer; }
+    input { padding: 0.4rem; min-width: 80px; }
+    textarea {
+      width: 100%;
+      min-height: 520px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.35;
+      white-space: pre;
+    }
+    .path { margin-bottom: 0.4rem; font-family: monospace; }
+  </style>
+</head>
+<body>
+  <h1>AML Data Hub API Browser</h1>
+  <div class="muted">No authentication required. Click an endpoint to load JSON.</div>
+
+  <div class="row">
+    <label>limit <input id="limit" type="number" value="50" min="1"></label>
+    <label>entity <input id="entity" type="text" placeholder="optional"></label>
+    <label><input id="activeOnly" type="checkbox" checked> active_only</label>
+  </div>
+
+  <div class="row">
+    <button onclick="loadJson('/api/dq/rules?' + dqRulesQuery())">DQ Rules</button>
+    <button onclick="loadJson('/api/jobs/batch-results?limit=' + getLimit())">Batch Results</button>
+    <button onclick="loadJson('/api/dq/violations?limit=' + getLimit())">DQ Violations</button>
+    <button onclick="loadJson('/api/jobs/runs?limit=' + getLimit())">Job Runs</button>
+    <button onclick="loadJson('/api/dq/results?limit=' + getLimit())">DQ Results</button>
+  </div>
+
+  <div class="path" id="currentPath">Path: (none)</div>
+  <textarea id="jsonOutput" readonly>{}</textarea>
+
+  <script>
+    function getLimit() {
+      const v = parseInt(document.getElementById('limit').value || '50', 10);
+      return Number.isFinite(v) && v > 0 ? v : 50;
+    }
+
+    function dqRulesQuery() {
+      const params = new URLSearchParams();
+      params.set('limit', String(getLimit()));
+      params.set('active_only', document.getElementById('activeOnly').checked ? 'true' : 'false');
+      const entity = document.getElementById('entity').value.trim();
+      if (entity) params.set('entity_name', entity);
+      return params.toString();
+    }
+
+    async function loadJson(path) {
+      document.getElementById('currentPath').textContent = 'Path: ' + path;
+      const out = document.getElementById('jsonOutput');
+      out.value = 'Loading...';
+      try {
+        const resp = await fetch(path);
+        const data = await resp.json();
+        out.value = JSON.stringify(data, null, 2);
+      } catch (err) {
+        out.value = JSON.stringify({ error: String(err) }, null, 2);
+      }
+    }
+
+    loadJson('/api/dq/rules?' + dqRulesQuery());
+  </script>
+</body>
+</html>

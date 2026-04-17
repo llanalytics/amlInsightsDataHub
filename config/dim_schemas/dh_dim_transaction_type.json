@@ -1,0 +1,21 @@
+{
+  "required": ["transaction_type_code", "description"],
+  "properties": {
+    "transaction_type_code": {
+      "type": "string",
+      "maxLength": 50,
+      "dq": {
+        "not_null": true,
+        "regex": "^[A-Z_]{4,50}$"
+      }
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 120,
+      "dq": {
+        "not_null": true
+      }
+    }
+  },
+  "additionalProperties": false
+}

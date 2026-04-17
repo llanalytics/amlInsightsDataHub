@@ -1,0 +1,22 @@
+{
+  "required": ["account_key", "account_type"],
+  "properties": {
+    "account_key": {
+      "type": "string",
+      "maxLength": 100,
+      "dq": {
+        "not_null": true,
+        "regex": "^ACCT-[0-9]{3,}$"
+      }
+    },
+    "account_type": {
+      "type": "string",
+      "maxLength": 80,
+      "dq": {
+        "not_null": true,
+        "lookup_name": "Account_Type"
+      }
+    }
+  },
+  "additionalProperties": false
+}
