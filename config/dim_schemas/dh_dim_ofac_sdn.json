@@ -1,0 +1,67 @@
+{
+  "required": ["sdn_uid", "name", "sdn_type", "program_list"],
+  "properties": {
+    "sdn_uid": {
+      "type": "string",
+      "maxLength": 40,
+      "dq": {
+        "not_null": true,
+        "regex": "^[0-9]+$"
+      }
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 500,
+      "dq": {
+        "not_null": true
+      }
+    },
+    "sdn_type": {
+      "type": "string",
+      "maxLength": 40,
+      "dq": {
+        "not_null": true
+      }
+    },
+    "program_list": {
+      "type": "string",
+      "maxLength": 2000,
+      "dq": {
+        "not_null": true
+      }
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 250
+    },
+    "call_sign": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "vessel_type": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "tonnage": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "gross_registered_tonnage": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "vessel_flag": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "vessel_owner": {
+      "type": "string",
+      "maxLength": 400
+    },
+    "remarks": {
+      "type": "string",
+      "maxLength": 4000
+    }
+  },
+  "additionalProperties": false
+}

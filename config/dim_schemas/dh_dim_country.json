@@ -1,13 +1,12 @@
 {
-  "required": ["country_code", "country_name"],
+  "required": ["country_code_2", "country_code_3", "country_name"],
   "properties": {
-    "country_code": {
+    "country_code_2": {
       "type": "string",
-      "maxLength": 20,
+      "maxLength": 2,
       "dq": {
         "not_null": true,
-        "regex": "^[A-Z]{2,3}$",
-        "lookup_name": "Country_Code"
+        "regex": "^[A-Z]{2}$"
       }
     },
     "country_name": {
@@ -15,6 +14,14 @@
       "maxLength": 120,
       "dq": {
         "not_null": true
+      }
+    },
+    "country_code_3": {
+      "type": "string",
+      "maxLength": 3,
+      "dq": {
+        "not_null": true,
+        "regex": "^[A-Z]{3}$"
       }
     }
   },

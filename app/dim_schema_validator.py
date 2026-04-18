@@ -11,7 +11,7 @@ DIM_SCHEMA_DIR = BASE_DIR / "config" / "dim_schemas"
 ALLOWED_SCHEMA_KEYS = {"required", "properties", "additionalProperties"}
 ALLOWED_PROPERTY_KEYS = {"type", "maxLength", "pattern", "enum", "minimum", "maximum", "dq"}
 ALLOWED_TYPES = {"string", "number", "integer"}
-ALLOWED_DQ_KEYS = {"not_null", "regex", "lookup_name"}
+ALLOWED_DQ_KEYS = {"not_null", "regex", "lookup_name", "dimension_lookup"}
 
 
 class DimSchemaError(ValueError):
@@ -70,6 +70,21 @@ def _validate_dq_definition(schema_name: str, field_name: str, dq_rules: dict[st
     lookup_name = dq_rules.get("lookup_name")
     if lookup_name is not None and (not isinstance(lookup_name, str) or not lookup_name.strip()):
         raise DimSchemaError(f"{schema_name}: '{field_name}' dq.lookup_name must be a non-empty string")
+
+    dimension_lookup = dq_rules.get("dimension_lookup")
+    if dimension_lookup is not None:
+        if not isinstance(dimension_lookup, dict):
+            raise DimSchemaError(f"{schema_name}: '{field_name}' dq.dimension_lookup must be an object")
+        table = dimension_lookup.get("table")
+        field = dimension_lookup.get("field")
+        if not isinstance(table, str) or not table.strip():
+            raise DimSchemaError(
+                f"{schema_name}: '{field_name}' dq.dimension_lookup.table must be a non-empty string"
+            )
+        if not isinstance(field, str) or not field.strip():
+            raise DimSchemaError(
+                f"{schema_name}: '{field_name}' dq.dimension_lookup.field must be a non-empty string"
+            )
 
 
 def validate_schema_definition(schema_name: str, schema: dict[str, Any]) -> None:
@@ -242,6 +257,7 @@ def validate_dim_attrs(
     table_name: str,
     attrs: dict[str, Any],
     lov_checker: Callable[[str, str], bool] | None = None,
+    dimension_checker: Callable[[str, str, str], bool] | None = None,
 ) -> None:
     schema = load_dim_schema(table_name)
     validate_schema_definition(table_name, schema)
@@ -307,4 +323,18 @@ def validate_dim_attrs(
             if not lov_checker(str(dq_lookup_name), str(value)):
                 raise DimSchemaError(
                     f"DQ lookup failed for '{field_name}': value '{value}' is not valid for lookup '{dq_lookup_name}'"
+                )
+
+        dq_dimension_lookup = dq_rules.get("dimension_lookup")
+        if has_value and dq_dimension_lookup:
+            if dimension_checker is None:
+                raise DimSchemaError(
+                    f"Dimension checker is required for dimension lookup validation on '{field_name}'"
+                )
+            dim_table = str(dq_dimension_lookup.get("table"))
+            dim_field = str(dq_dimension_lookup.get("field"))
+            if not dimension_checker(dim_table, dim_field, str(value)):
+                raise DimSchemaError(
+                    f"DQ dimension lookup failed for '{field_name}': value '{value}' "
+                    f"is not present in {dim_table}.{dim_field}"
                 )

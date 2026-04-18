@@ -89,6 +89,7 @@ class DHDimHousehold(SCDBase, Base):
 class DHDimCustomer(SCDBase, Base):
     __tablename__ = "dh_dim_customer"
     customer_key: Mapped[str] = mapped_column(String(100), primary_key=True)
+    business_unit: Mapped[str | None] = mapped_column(String(120))
 
 
 class DHDimAssociatedParty(SCDBase, Base):
@@ -108,12 +109,17 @@ class DHDimSubAccount(SCDBase, Base):
 
 class DHDimCountry(SCDBase, Base):
     __tablename__ = "dh_dim_country"
-    country_code: Mapped[str] = mapped_column(String(20), primary_key=True)
+    country_code_2: Mapped[str] = mapped_column(String(20), primary_key=True)
 
 
 class DHDimCurrency(SCDBase, Base):
     __tablename__ = "dh_dim_currency"
     currency_code: Mapped[str] = mapped_column(String(20), primary_key=True)
+
+
+class DHDimOfacSdn(SCDBase, Base):
+    __tablename__ = "dh_dim_ofac_sdn"
+    sdn_uid: Mapped[str] = mapped_column(String(40), primary_key=True)
 
 
 class DHDimCounterpartyAccount(SCDBase, Base):

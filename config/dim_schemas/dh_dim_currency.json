@@ -1,5 +1,5 @@
 {
-  "required": ["currency_code", "currency_name"],
+  "required": ["currency_code", "currency_name", "associated_countries"],
   "properties": {
     "currency_code": {
       "type": "string",
@@ -13,6 +13,13 @@
     "currency_name": {
       "type": "string",
       "maxLength": 120,
+      "dq": {
+        "not_null": true
+      }
+    },
+    "associated_countries": {
+      "type": "string",
+      "maxLength": 4000,
       "dq": {
         "not_null": true
       }

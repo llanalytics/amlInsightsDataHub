@@ -32,6 +32,7 @@ from app.models import (
     DHDimCounterpartyAccount,
     DHDimCountry,
     DHDimCurrency,
+    DHDimOfacSdn,
     DHDimCustomer,
     DHDimHousehold,
     DHDimSubAccount,
@@ -65,8 +66,9 @@ DIM_SPECS: list[DimSpec] = [
     DimSpec("dh_dim_associated_party", "dh_dim_associated_party", DHDimAssociatedParty, "associated_party_key"),
     DimSpec("dh_dim_account", "dh_dim_account", DHDimAccount, "account_key"),
     DimSpec("dh_dim_sub_account", "dh_dim_sub_account", DHDimSubAccount, "sub_account_key"),
-    DimSpec("dh_dim_country", "dh_dim_country", DHDimCountry, "country_code"),
+    DimSpec("dh_dim_country", "dh_dim_country", DHDimCountry, "country_code_2"),
     DimSpec("dh_dim_currency", "dh_dim_currency", DHDimCurrency, "currency_code"),
+    DimSpec("dh_dim_ofac_sdn", "dh_dim_ofac_sdn", DHDimOfacSdn, "sdn_uid"),
     DimSpec("dh_dim_counterparty_account", "dh_dim_counterparty_account", DHDimCounterpartyAccount, "counterparty_account_key"),
     DimSpec("dh_dim_transaction_type", "dh_dim_transaction_type", DHDimTransactionType, "transaction_type_code"),
 ]
@@ -109,6 +111,7 @@ def _scd_upsert(
     natural_field: str,
     natural_key: str,
     attrs: dict,
+    static_fields: dict | None,
     now: datetime,
     source_file: str,
 ) -> None:
@@ -124,9 +127,11 @@ def _scd_upsert(
     ).scalar_one_or_none()
 
     attr_json = json.dumps(attrs, sort_keys=True)
+    static_fields = static_fields or {}
     if current is None:
         row = model(
             **{natural_field: natural_key},
+            **static_fields,
             valid_from=now,
             valid_to=None,
             is_current=True,
@@ -136,13 +141,19 @@ def _scd_upsert(
         db.add(row)
         return
 
-    if _json_hash(json.loads(current.attr_json or "{}")) == _json_hash(attrs):
+    attrs_unchanged = _json_hash(json.loads(current.attr_json or "{}")) == _json_hash(attrs)
+    static_fields_unchanged = all(
+        (getattr(current, field_name) or None) == (field_value or None)
+        for field_name, field_value in static_fields.items()
+    )
+    if attrs_unchanged and static_fields_unchanged:
         return
 
     current.is_current = False
     current.valid_to = now
     next_row = model(
         **{natural_field: natural_key},
+        **static_fields,
         valid_from=now,
         valid_to=None,
         is_current=True,
@@ -315,6 +326,19 @@ def _dim_exists(db: Session, model, field_name: str, value: str) -> bool:
     )
 
 
+def _dimension_lookup_exists(db: Session, table_name: str, field_name: str, value: str) -> bool:
+    table = (table_name or "").strip()
+    field = (field_name or "").strip()
+    if not table or not field or not value:
+        return False
+
+    spec = next((s for s in DIM_SPECS if s.table_name == table), None)
+    if spec is None:
+        return False
+
+    return _dim_exists(db, spec.model, field, value)
+
+
 def _require_fields(row: dict[str, str], required: list[str]) -> list[str]:
     return [f for f in required if not _val(row, f)]
 
@@ -327,18 +351,27 @@ def _process_dim_row(db: Session, row: dict[str, str], file_name: str, now: date
     normalized = {k: (v or "").strip() for k, v in row.items()}
 
     try:
-        validate_dim_attrs(spec.table_name, normalized, lov_checker=lambda n, v: _lov_value_exists(db, n, v))
+        validate_dim_attrs(
+            spec.table_name,
+            normalized,
+            lov_checker=lambda n, v: _lov_value_exists(db, n, v),
+            dimension_checker=lambda table, field, value: _dimension_lookup_exists(db, table, field, value),
+        )
     except DimSchemaError as exc:
         return f"Dimension schema validation failed: {exc}"
 
+    static_fields: dict[str, str | None] = {}
     attrs = {}
     for key, value in normalized.items():
         if key == spec.natural_field:
             continue
+        if spec.table_name == "dh_dim_customer" and key == "business_unit":
+            static_fields["business_unit"] = value or None
+            continue
         if value:
             attrs[key] = value
 
-    _scd_upsert(db, spec.model, spec.natural_field, natural_key, attrs, now, file_name)
+    _scd_upsert(db, spec.model, spec.natural_field, natural_key, attrs, static_fields, now, file_name)
     return None
 
 
@@ -454,7 +487,7 @@ def _process_fact_cash_row(db: Session, row: dict[str, str], file_name: str, now
             "Referential integrity failed: "
             f"transaction_type_code '{transaction_type_code}' not found in dh_dim_transaction_type."
         )
-    if not _dim_exists(db, DHDimCountry, "country_code", country_code):
+    if not _dim_exists(db, DHDimCountry, "country_code_2", country_code):
         return f"Referential integrity failed: country_code '{country_code}' not found in dh_dim_country."
     if not _dim_exists(db, DHDimCurrency, "currency_code", currency_code):
         return f"Referential integrity failed: currency_code '{currency_code}' not found in dh_dim_currency."

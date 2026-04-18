@@ -1,14 +1,190 @@
 lookup_name,valid_value,description,is_active
-Country_Code,US,United States alpha-2,true
-Country_Code,GB,United Kingdom alpha-2,true
-Country_Code,USA,United States alpha-3,true
-Currency_Code,USD,US Dollar,true
-Currency_Code,GBP,Pound Sterling,true
-Customer_Segment,Retail,Retail segment,true
-Customer_Segment,Commercial,Commercial segment,true
 Account_Type,Checking,Checking account,true
 Account_Type,Corporate,Corporate account,true
-Sub_Account_Type,Online,Online channel,true
-Sub_Account_Type,Branch,Branch channel,true
+Business_Unit,commercial_banking,Commercial Banking,true
+Business_Unit,payments,Payments,true
+Business_Unit,retail_banking,Retail Banking,true
+Currency_Code,AED,UAE Dirham ISO 4217,true
+Currency_Code,AFN,Afghani ISO 4217,true
+Currency_Code,ALL,Lek ISO 4217,true
+Currency_Code,AMD,Armenian Dram ISO 4217,true
+Currency_Code,AOA,Kwanza ISO 4217,true
+Currency_Code,ARS,Argentine Peso ISO 4217,true
+Currency_Code,AUD,Australian Dollar ISO 4217,true
+Currency_Code,AWG,Aruban Florin ISO 4217,true
+Currency_Code,AZN,Azerbaijan Manat ISO 4217,true
+Currency_Code,BAM,Convertible Mark ISO 4217,true
+Currency_Code,BBD,Barbados Dollar ISO 4217,true
+Currency_Code,BDT,Taka ISO 4217,true
+Currency_Code,BHD,Bahraini Dinar ISO 4217,true
+Currency_Code,BIF,Burundi Franc ISO 4217,true
+Currency_Code,BMD,Bermudian Dollar ISO 4217,true
+Currency_Code,BND,Brunei Dollar ISO 4217,true
+Currency_Code,BOB,Boliviano ISO 4217,true
+Currency_Code,BOV,Mvdol ISO 4217,true
+Currency_Code,BRL,Brazilian Real ISO 4217,true
+Currency_Code,BSD,Bahamian Dollar ISO 4217,true
+Currency_Code,BTN,Ngultrum ISO 4217,true
+Currency_Code,BWP,Pula ISO 4217,true
+Currency_Code,BYN,Belarusian Ruble ISO 4217,true
+Currency_Code,BZD,Belize Dollar ISO 4217,true
+Currency_Code,CAD,Canadian Dollar ISO 4217,true
+Currency_Code,CDF,Congolese Franc ISO 4217,true
+Currency_Code,CHE,WIR Euro ISO 4217,true
+Currency_Code,CHF,Swiss Franc ISO 4217,true
+Currency_Code,CHW,WIR Franc ISO 4217,true
+Currency_Code,CLF,Unidad de Fomento ISO 4217,true
+Currency_Code,CLP,Chilean Peso ISO 4217,true
+Currency_Code,CNY,Yuan Renminbi ISO 4217,true
+Currency_Code,COP,Colombian Peso ISO 4217,true
+Currency_Code,COU,Unidad de Valor Real ISO 4217,true
+Currency_Code,CRC,Costa Rican Colon ISO 4217,true
+Currency_Code,CUP,Cuban Peso ISO 4217,true
+Currency_Code,CVE,Cabo Verde Escudo ISO 4217,true
+Currency_Code,CZK,Czech Koruna ISO 4217,true
+Currency_Code,DJF,Djibouti Franc ISO 4217,true
+Currency_Code,DKK,Danish Krone ISO 4217,true
+Currency_Code,DOP,Dominican Peso ISO 4217,true
+Currency_Code,DZD,Algerian Dinar ISO 4217,true
+Currency_Code,EGP,Egyptian Pound ISO 4217,true
+Currency_Code,ERN,Nakfa ISO 4217,true
+Currency_Code,ETB,Ethiopian Birr ISO 4217,true
+Currency_Code,EUR,Euro ISO 4217,true
+Currency_Code,FJD,Fiji Dollar ISO 4217,true
+Currency_Code,FKP,Falkland Islands Pound ISO 4217,true
+Currency_Code,GBP,Pound Sterling ISO 4217,true
+Currency_Code,GEL,Lari ISO 4217,true
+Currency_Code,GHS,Ghana Cedi ISO 4217,true
+Currency_Code,GIP,Gibraltar Pound ISO 4217,true
+Currency_Code,GMD,Dalasi ISO 4217,true
+Currency_Code,GNF,Guinean Franc ISO 4217,true
+Currency_Code,GTQ,Quetzal ISO 4217,true
+Currency_Code,GYD,Guyana Dollar ISO 4217,true
+Currency_Code,HKD,Hong Kong Dollar ISO 4217,true
+Currency_Code,HNL,Lempira ISO 4217,true
+Currency_Code,HTG,Gourde ISO 4217,true
+Currency_Code,HUF,Forint ISO 4217,true
+Currency_Code,IDR,Rupiah ISO 4217,true
+Currency_Code,ILS,New Israeli Sheqel ISO 4217,true
+Currency_Code,INR,Indian Rupee ISO 4217,true
+Currency_Code,IQD,Iraqi Dinar ISO 4217,true
+Currency_Code,IRR,Iranian Rial ISO 4217,true
+Currency_Code,ISK,Iceland Krona ISO 4217,true
+Currency_Code,JMD,Jamaican Dollar ISO 4217,true
+Currency_Code,JOD,Jordanian Dinar ISO 4217,true
+Currency_Code,JPY,Yen ISO 4217,true
+Currency_Code,KES,Kenyan Shilling ISO 4217,true
+Currency_Code,KGS,Som ISO 4217,true
+Currency_Code,KHR,Riel ISO 4217,true
+Currency_Code,KMF,Comorian Franc ISO 4217,true
+Currency_Code,KPW,North Korean Won ISO 4217,true
+Currency_Code,KRW,Won ISO 4217,true
+Currency_Code,KWD,Kuwaiti Dinar ISO 4217,true
+Currency_Code,KYD,Cayman Islands Dollar ISO 4217,true
+Currency_Code,KZT,Tenge ISO 4217,true
+Currency_Code,LAK,Lao Kip ISO 4217,true
+Currency_Code,LBP,Lebanese Pound ISO 4217,true
+Currency_Code,LKR,Sri Lanka Rupee ISO 4217,true
+Currency_Code,LRD,Liberian Dollar ISO 4217,true
+Currency_Code,LSL,Loti ISO 4217,true
+Currency_Code,LYD,Libyan Dinar ISO 4217,true
+Currency_Code,MAD,Moroccan Dirham ISO 4217,true
+Currency_Code,MDL,Moldovan Leu ISO 4217,true
+Currency_Code,MGA,Malagasy Ariary ISO 4217,true
+Currency_Code,MKD,Denar ISO 4217,true
+Currency_Code,MMK,Kyat ISO 4217,true
+Currency_Code,MNT,Tugrik ISO 4217,true
+Currency_Code,MOP,Pataca ISO 4217,true
+Currency_Code,MRU,Ouguiya ISO 4217,true
+Currency_Code,MUR,Mauritius Rupee ISO 4217,true
+Currency_Code,MVR,Rufiyaa ISO 4217,true
+Currency_Code,MWK,Malawi Kwacha ISO 4217,true
+Currency_Code,MXN,Mexican Peso ISO 4217,true
+Currency_Code,MXV,Mexican Unidad de Inversion (UDI) ISO 4217,true
+Currency_Code,MYR,Malaysian Ringgit ISO 4217,true
+Currency_Code,MZN,Mozambique Metical ISO 4217,true
+Currency_Code,NAD,Namibia Dollar ISO 4217,true
+Currency_Code,NGN,Naira ISO 4217,true
+Currency_Code,NIO,Cordoba Oro ISO 4217,true
+Currency_Code,NOK,Norwegian Krone ISO 4217,true
+Currency_Code,NPR,Nepalese Rupee ISO 4217,true
+Currency_Code,NZD,New Zealand Dollar ISO 4217,true
+Currency_Code,OMR,Rial Omani ISO 4217,true
+Currency_Code,PAB,Balboa ISO 4217,true
+Currency_Code,PEN,Sol ISO 4217,true
+Currency_Code,PGK,Kina ISO 4217,true
+Currency_Code,PHP,Philippine Peso ISO 4217,true
+Currency_Code,PKR,Pakistan Rupee ISO 4217,true
+Currency_Code,PLN,Zloty ISO 4217,true
+Currency_Code,PYG,Guarani ISO 4217,true
+Currency_Code,QAR,Qatari Rial ISO 4217,true
+Currency_Code,RON,Romanian Leu ISO 4217,true
+Currency_Code,RSD,Serbian Dinar ISO 4217,true
+Currency_Code,RUB,Russian Ruble ISO 4217,true
+Currency_Code,RWF,Rwanda Franc ISO 4217,true
+Currency_Code,SAR,Saudi Riyal ISO 4217,true
+Currency_Code,SBD,Solomon Islands Dollar ISO 4217,true
+Currency_Code,SCR,Seychelles Rupee ISO 4217,true
+Currency_Code,SDG,Sudanese Pound ISO 4217,true
+Currency_Code,SEK,Swedish Krona ISO 4217,true
+Currency_Code,SGD,Singapore Dollar ISO 4217,true
+Currency_Code,SHP,Saint Helena Pound ISO 4217,true
+Currency_Code,SLE,Leone ISO 4217,true
+Currency_Code,SOS,Somali Shilling ISO 4217,true
+Currency_Code,SRD,Surinam Dollar ISO 4217,true
+Currency_Code,SSP,South Sudanese Pound ISO 4217,true
+Currency_Code,STN,Dobra ISO 4217,true
+Currency_Code,SVC,El Salvador Colon ISO 4217,true
+Currency_Code,SYP,Syrian Pound ISO 4217,true
+Currency_Code,SZL,Lilangeni ISO 4217,true
+Currency_Code,THB,Baht ISO 4217,true
+Currency_Code,TJS,Somoni ISO 4217,true
+Currency_Code,TMT,Turkmenistan New Manat ISO 4217,true
+Currency_Code,TND,Tunisian Dinar ISO 4217,true
+Currency_Code,TOP,Pa’anga ISO 4217,true
+Currency_Code,TRY,Turkish Lira ISO 4217,true
+Currency_Code,TTD,Trinidad and Tobago Dollar ISO 4217,true
+Currency_Code,TWD,New Taiwan Dollar ISO 4217,true
+Currency_Code,TZS,Tanzanian Shilling ISO 4217,true
+Currency_Code,UAH,Hryvnia ISO 4217,true
+Currency_Code,UGX,Uganda Shilling ISO 4217,true
+Currency_Code,USD,US Dollar ISO 4217,true
+Currency_Code,USN,US Dollar (Next day) ISO 4217,true
+Currency_Code,UYI,Uruguay Peso en Unidades Indexadas (UI) ISO 4217,true
+Currency_Code,UYU,Peso Uruguayo ISO 4217,true
+Currency_Code,UYW,Unidad Previsional ISO 4217,true
+Currency_Code,UZS,Uzbekistan Sum ISO 4217,true
+Currency_Code,VED,Bolívar Soberano ISO 4217,true
+Currency_Code,VES,Bolívar Soberano ISO 4217,true
+Currency_Code,VND,Dong ISO 4217,true
+Currency_Code,VUV,Vatu ISO 4217,true
+Currency_Code,WST,Tala ISO 4217,true
+Currency_Code,XAD,Arab Accounting Dinar ISO 4217,true
+Currency_Code,XAF,CFA Franc BEAC ISO 4217,true
+Currency_Code,XAG,Silver ISO 4217,true
+Currency_Code,XAU,Gold ISO 4217,true
+Currency_Code,XBA,Bond Markets Unit European Composite Unit (EURCO) ISO 4217,true
+Currency_Code,XBB,Bond Markets Unit European Monetary Unit (E.M.U.-6) ISO 4217,true
+Currency_Code,XBC,Bond Markets Unit European Unit of Account 9 (E.U.A.-9) ISO 4217,true
+Currency_Code,XBD,Bond Markets Unit European Unit of Account 17 (E.U.A.-17) ISO 4217,true
+Currency_Code,XCD,East Caribbean Dollar ISO 4217,true
+Currency_Code,XCG,Caribbean Guilder ISO 4217,true
+Currency_Code,XDR,SDR (Special Drawing Right) ISO 4217,true
+Currency_Code,XOF,CFA Franc BCEAO ISO 4217,true
+Currency_Code,XPD,Palladium ISO 4217,true
+Currency_Code,XPF,CFP Franc ISO 4217,true
+Currency_Code,XPT,Platinum ISO 4217,true
+Currency_Code,XSU,Sucre ISO 4217,true
+Currency_Code,XTS,Codes specifically reserved for testing purposes ISO 4217,true
+Currency_Code,XUA,ADB Unit of Account ISO 4217,true
+Currency_Code,XXX,The codes assigned for transactions where no currency is involved ISO 4217,true
+Currency_Code,YER,Yemeni Rial ISO 4217,true
+Currency_Code,ZAR,Rand ISO 4217,true
+Currency_Code,ZMW,Zambian Kwacha ISO 4217,true
+Currency_Code,ZWG,Zimbabwe Gold ISO 4217,true
+Customer_Segment,Commercial,Commercial segment,true
+Customer_Segment,Retail,Retail segment,true
 Relationship_Type,Primary,Primary account relationship,true
 Relationship_Type,Secondary,Secondary account relationship,true
+Sub_Account_Type,Branch,Branch channel,true
+Sub_Account_Type,Online,Online channel,true

@@ -18,5 +18,20 @@
       }
     }
   },
+    "account_name": {
+      "type": "string",
+      "maxLength": 80,
+      "dq": {
+        "not_null": true
+      }
+    },
+    "product_type": {
+      "type": "string",
+      "maxLength": 80,
+      "dq": {
+        "not_null": true,
+        "lookup_name": "Product_Type"
+      }
+    },
   "additionalProperties": false
 }

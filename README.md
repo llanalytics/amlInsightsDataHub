@@ -23,6 +23,7 @@ Dimensions:
 - `dh_dim_sub_account`
 - `dh_dim_country`
 - `dh_dim_currency`
+- `dh_dim_ofac_sdn`
 - `dh_dim_counterparty_account`
 - `dh_dim_transaction_type`
 
@@ -57,6 +58,7 @@ Supported prefixes:
 - `dh_dim_sub_account`
 - `dh_dim_country`
 - `dh_dim_currency`
+- `dh_dim_ofac_sdn`
 - `dh_dim_counterparty_account`
 - `dh_dim_transaction_type`
 - `dh_bridge_household_customer`
@@ -130,6 +132,8 @@ Supported `dq` checks:
 - `not_null`: true/false
 - `regex`: regex pattern
 - `lookup_name`: validates against active values in `dh_lov_values`
+- `dimension_lookup`: validates against an existing dimension table value
+  format: `{ "table": "dh_dim_country", "field": "country_code_2" }`
 
 Pipeline behavior:
 - During dimension loads, non-key CSV columns are mapped into `attr_json` attributes.
@@ -189,3 +193,16 @@ Lightweight API browser UI:
 ## Scheduling
 
 Use `scripts/run_job.sh` in cron or an external scheduler.
+
+
+## OFAC SDN Reference Data
+
+Use this script to refresh OFAC SDN sample reference data from OFAC's published CSV:
+
+- `./scripts/update_ofac_sdn_sample.sh`
+
+This updates:
+- `data/sample/dh_dim_ofac_sdn_sample.csv`
+
+Pipeline support:
+- SDN rows are loaded into `dh_dim_ofac_sdn` as SCD Type 2 rows keyed by `sdn_uid`.
