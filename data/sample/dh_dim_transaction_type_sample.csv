@@ -1,3 +1,11 @@
-transaction_type_code,description
-CASH_DEP,Cash Deposit
-CASH_WDR,Cash Withdrawal
+transaction_type_code,aml_classification,aml_sub_classification,direction,mechanism
+10,External Funds Transfer,,Outbound,Wire
+20,External Funds Transfer,,Inbound,Wire
+30,External Funds Transfer,,Outbound,ACH
+40,External Funds Transfer,,Inbound,ACH
+50,Internal Funds Transfer,,Outbound,Online
+60,Internal Funds Transfer,,Inbound,Online
+70,Cash,,Outbound,Branch
+80,Cash,,Inbound,Branch
+90,Check,,Outbound,Branch
+100,Check,,Inbound,Branch

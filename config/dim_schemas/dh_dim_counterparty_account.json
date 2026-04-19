@@ -15,6 +15,31 @@
       "dq": {
         "not_null": true
       }
+    },
+    "account_id": {
+      "type": "string",
+      "maxLength": 120,
+      "dq": {
+        "not_null": true
+      }
+    },
+    "bank_id": {
+      "type": "string",
+      "maxLength": 120,
+      "dq": {
+        "not_null": true
+      }
+    },
+    "jurisdiction": {
+      "type": "string",
+      "maxLength": 120,
+      "dq": {
+        "not_null": true,
+        "dimension_lookup": {
+          "table": "dh_dim_country",
+          "field": "country_code_2"
+        }
+      }
     }
   },
   "additionalProperties": false

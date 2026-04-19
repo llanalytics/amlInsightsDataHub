@@ -1,3 +1,101 @@
-customer_key,name,segment,business_unit
-CUST-001,Jane Doe,Retail,retail_banking
-CUST-009,Alex Smith,Commercial,commercial_banking
+customer_key,name,segment,business_unit,address_line_1,address_line_2,address_city,address_state_province,address_postal_code,address_country_code
+CUST-001,"TIANSHENG INDUSTRY AND TRADING CO., LTD.",Organization,commercial_banking,"Orion House Services, Harbour City",7-11 Canton Road,Hong Kong,,999077,HK
+CUST-002,KIM SOO IN,Individual,retail_banking,12 Jung-gu Financial Street,,Seoul,,04524,KR
+CUST-003,Logan Clark,Individual,retail_banking,103 Market Street,,Sydney,NSW,2000,AU
+CUST-004,Amelia King,Individual,commercial_banking,104 Market Street,Suite 200,Berlin,,10115,DE
+CUST-005,Cobalt Foods PLC,Organization,payments,105 Market Street,,Paris,,75001,FR
+CUST-006,Abigail Evans,Individual,retail_banking,106 Market Street,,Mumbai,MH,400001,IN
+CUST-007,Michael Cook,Individual,commercial_banking,107 Market Street,,Singapore,,018989,SG
+CUST-008,Grace Chen,Individual,payments,108 Market Street,Suite 200,Hong Kong,,999077,HK
+CUST-009,David Moore,Individual,retail_banking,109 Market Street,,Seoul,,04524,KR
+CUST-010,Ironwood Financial Services Group,Organization,commercial_banking,110 Market Street,,Tokyo,,100-0001,JP
+CUST-011,Owen Allen,Individual,payments,111 Market Street,,Zurich,,8001,CH
+CUST-012,Nora Nelson,Individual,retail_banking,112 Market Street,Suite 200,Dubai,,00000,AE
+CUST-013,Jack Parker,Individual,commercial_banking,113 Market Street,,New York,NY,10001,US
+CUST-014,Sofia Reed,Individual,payments,114 Market Street,,London,,SW1A 1AA,GB
+CUST-015,Prime Partners Corp.,Organization,retail_banking,115 Market Street,,Toronto,ON,M5H 2N2,CA
+CUST-016,Penelope Thomas,Individual,commercial_banking,116 Market Street,Suite 200,Sydney,NSW,2000,AU
+CUST-017,Liam Harris,Individual,payments,117 Market Street,,Berlin,,10115,DE
+CUST-018,Emma Young,Individual,retail_banking,118 Market Street,,Paris,,75001,FR
+CUST-019,Mason Adams,Individual,commercial_banking,119 Market Street,,Mumbai,MH,400001,IN
+CUST-020,Liberty Holdings Ltd.,Organization,payments,120 Market Street,Suite 200,Singapore,,018989,SG
+CUST-021,Benjamin Rogers,Individual,retail_banking,121 Market Street,,Hong Kong,,999077,HK
+CUST-022,Evelyn Kim,Individual,commercial_banking,122 Market Street,,Seoul,,04524,KR
+CUST-023,Alexander Anderson,Individual,payments,123 Market Street,,Tokyo,,100-0001,JP
+CUST-024,Scarlett White,Individual,retail_banking,124 Market Street,Suite 200,Zurich,,8001,CH
+CUST-025,Vertex Foods Inc.,Organization,commercial_banking,125 Market Street,,Dubai,,00000,AE
+CUST-026,Victoria Baker,Individual,payments,126 Market Street,,New York,NY,10001,US
+CUST-027,Samuel Turner,Individual,retail_banking,127 Market Street,,London,,SW1A 1AA,GB
+CUST-028,Lily Morris,Individual,commercial_banking,128 Market Street,Suite 200,Toronto,ON,M5H 2N2,CA
+CUST-029,John Johnson,Individual,payments,129 Market Street,,Sydney,NSW,2000,AU
+CUST-030,Northstar Financial Services LLC,Organization,retail_banking,130 Market Street,,Berlin,,10115,DE
+CUST-031,Jayden Thompson,Individual,commercial_banking,131 Market Street,,Paris,,75001,FR
+CUST-032,Aria Robinson,Individual,payments,132 Market Street,Suite 200,Mumbai,MH,400001,IN
+CUST-033,Isaac Green,Individual,retail_banking,133 Market Street,,Singapore,,018989,SG
+CUST-034,Ava Roberts,Individual,commercial_banking,134 Market Street,,Hong Kong,,999077,HK
+CUST-035,Cobalt Partners PLC,Organization,payments,135 Market Street,,Seoul,,04524,KR
+CUST-036,Isabella Patel,Individual,retail_banking,136 Market Street,Suite 200,Tokyo,,100-0001,JP
+CUST-037,James Garcia,Individual,commercial_banking,137 Market Street,,Zurich,,8001,CH
+CUST-038,Harper Perez,Individual,payments,138 Market Street,,Dubai,,00000,AE
+CUST-039,Henry Lewis,Individual,retail_banking,139 Market Street,,New York,NY,10001,US
+CUST-040,Ironwood Holdings Group,Organization,commercial_banking,140 Market Street,Suite 200,London,,SW1A 1AA,GB
+CUST-041,Daniel Mitchell,Individual,payments,141 Market Street,,Toronto,ON,M5H 2N2,CA
+CUST-042,Chloe Collins,Individual,retail_banking,142 Market Street,,Sydney,NSW,2000,AU
+CUST-043,Joseph Nguyen,Individual,commercial_banking,143 Market Street,,Berlin,,10115,DE
+CUST-044,Zoe Miller,Individual,payments,144 Market Street,Suite 200,Paris,,75001,FR
+CUST-045,Prime Foods Corp.,Organization,retail_banking,145 Market Street,,Mumbai,MH,400001,IN
+CUST-046,Layla Ramirez,Individual,commercial_banking,146 Market Street,,Singapore,,018989,SG
+CUST-047,Luke Wright,Individual,payments,147 Market Street,,Hong Kong,,999077,HK
+CUST-048,Camila Campbell,Individual,retail_banking,148 Market Street,Suite 200,Seoul,,04524,KR
+CUST-049,Leo Edwards,Individual,commercial_banking,149 Market Street,,Tokyo,,100-0001,JP
+CUST-050,Liberty Financial Services Ltd.,Organization,payments,150 Market Street,,Zurich,,8001,CH
+CUST-051,Noah Davis,Individual,retail_banking,151 Market Street,,Dubai,,00000,AE
+CUST-052,Sophia Martin,Individual,commercial_banking,152 Market Street,Suite 200,New York,NY,10001,US
+CUST-053,Logan Clark,Individual,payments,153 Market Street,,London,,SW1A 1AA,GB
+CUST-054,Amelia King,Individual,retail_banking,154 Market Street,,Toronto,ON,M5H 2N2,CA
+CUST-055,Vertex Partners Inc.,Organization,commercial_banking,155 Market Street,,Sydney,NSW,2000,AU
+CUST-056,Abigail Evans,Individual,payments,156 Market Street,Suite 200,Berlin,,10115,DE
+CUST-057,Michael Cook,Individual,retail_banking,157 Market Street,,Paris,,75001,FR
+CUST-058,Grace Chen,Individual,commercial_banking,158 Market Street,,Mumbai,MH,400001,IN
+CUST-059,David Moore,Individual,payments,159 Market Street,,Singapore,,018989,SG
+CUST-060,Northstar Holdings LLC,Organization,retail_banking,160 Market Street,Suite 200,Hong Kong,,999077,HK
+CUST-061,Owen Allen,Individual,commercial_banking,161 Market Street,,Seoul,,04524,KR
+CUST-062,Nora Nelson,Individual,payments,162 Market Street,,Tokyo,,100-0001,JP
+CUST-063,Jack Parker,Individual,retail_banking,163 Market Street,,Zurich,,8001,CH
+CUST-064,Sofia Reed,Individual,commercial_banking,164 Market Street,Suite 200,Dubai,,00000,AE
+CUST-065,Cobalt Foods PLC,Organization,payments,165 Market Street,,New York,NY,10001,US
+CUST-066,Penelope Thomas,Individual,retail_banking,166 Market Street,,London,,SW1A 1AA,GB
+CUST-067,Liam Harris,Individual,commercial_banking,167 Market Street,,Toronto,ON,M5H 2N2,CA
+CUST-068,Emma Young,Individual,payments,168 Market Street,Suite 200,Sydney,NSW,2000,AU
+CUST-069,Mason Adams,Individual,retail_banking,169 Market Street,,Berlin,,10115,DE
+CUST-070,Ironwood Financial Services Group,Organization,commercial_banking,170 Market Street,,Paris,,75001,FR
+CUST-071,Benjamin Rogers,Individual,payments,171 Market Street,,Mumbai,MH,400001,IN
+CUST-072,Evelyn Kim,Individual,retail_banking,172 Market Street,Suite 200,Singapore,,018989,SG
+CUST-073,Alexander Anderson,Individual,commercial_banking,173 Market Street,,Hong Kong,,999077,HK
+CUST-074,Scarlett White,Individual,payments,174 Market Street,,Seoul,,04524,KR
+CUST-075,Prime Partners Corp.,Organization,retail_banking,175 Market Street,,Tokyo,,100-0001,JP
+CUST-076,Victoria Baker,Individual,commercial_banking,176 Market Street,Suite 200,Zurich,,8001,CH
+CUST-077,Samuel Turner,Individual,payments,177 Market Street,,Dubai,,00000,AE
+CUST-078,Lily Morris,Individual,retail_banking,178 Market Street,,New York,NY,10001,US
+CUST-079,John Johnson,Individual,commercial_banking,179 Market Street,,London,,SW1A 1AA,GB
+CUST-080,Liberty Holdings Ltd.,Organization,payments,180 Market Street,Suite 200,Toronto,ON,M5H 2N2,CA
+CUST-081,Jayden Thompson,Individual,retail_banking,181 Market Street,,Sydney,NSW,2000,AU
+CUST-082,Aria Robinson,Individual,commercial_banking,182 Market Street,,Berlin,,10115,DE
+CUST-083,Isaac Green,Individual,payments,183 Market Street,,Paris,,75001,FR
+CUST-084,Ava Roberts,Individual,retail_banking,184 Market Street,Suite 200,Mumbai,MH,400001,IN
+CUST-085,Vertex Foods Inc.,Organization,commercial_banking,185 Market Street,,Singapore,,018989,SG
+CUST-086,Isabella Patel,Individual,payments,186 Market Street,,Hong Kong,,999077,HK
+CUST-087,James Garcia,Individual,retail_banking,187 Market Street,,Seoul,,04524,KR
+CUST-088,Harper Perez,Individual,commercial_banking,188 Market Street,Suite 200,Tokyo,,100-0001,JP
+CUST-089,Henry Lewis,Individual,payments,189 Market Street,,Zurich,,8001,CH
+CUST-090,Northstar Financial Services LLC,Organization,retail_banking,190 Market Street,,Dubai,,00000,AE
+CUST-091,Daniel Mitchell,Individual,commercial_banking,191 Market Street,,New York,NY,10001,US
+CUST-092,Chloe Collins,Individual,payments,192 Market Street,Suite 200,London,,SW1A 1AA,GB
+CUST-093,Joseph Nguyen,Individual,retail_banking,193 Market Street,,Toronto,ON,M5H 2N2,CA
+CUST-094,Zoe Miller,Individual,commercial_banking,194 Market Street,,Sydney,NSW,2000,AU
+CUST-095,Cobalt Partners PLC,Organization,payments,195 Market Street,,Berlin,,10115,DE
+CUST-096,Layla Ramirez,Individual,retail_banking,196 Market Street,Suite 200,Paris,,75001,FR
+CUST-097,Luke Wright,Individual,commercial_banking,197 Market Street,,Mumbai,MH,400001,IN
+CUST-098,Camila Campbell,Individual,payments,198 Market Street,,Singapore,,018989,SG
+CUST-099,Leo Edwards,Individual,retail_banking,199 Market Street,,Hong Kong,,999077,HK
+CUST-100,Ironwood Holdings Group,Organization,commercial_banking,200 Market Street,Suite 200,Seoul,,04524,KR

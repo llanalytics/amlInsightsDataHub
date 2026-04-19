@@ -6,8 +6,7 @@
       "maxLength": 20,
       "dq": {
         "not_null": true,
-        "regex": "^[A-Z]{3}$",
-        "lookup_name": "Currency_Code"
+        "regex": "^[A-Z]{3}$"
       }
     },
     "currency_name": {

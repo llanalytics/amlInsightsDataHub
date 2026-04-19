@@ -1,3 +1,201 @@
-account_key,account_type
-ACCT-001,Checking
-ACCT-900,Corporate
+account_key,account_type,account_name
+ACCT-00001,Commercial Loan,"TIANSHENG INDUSTRY AND TRADING CO., LTD."
+ACCT-00002,Commercial Checking,"TIANSHENG INDUSTRY AND TRADING CO., LTD."
+ACCT-00003,Loan,KIM SOO IN
+ACCT-00004,Credit Card,KIM SOO IN
+ACCT-00005,Checking,KIM SOO IN
+ACCT-00006,Credit Card,Logan Clark
+ACCT-00007,Checking,Amelia King
+ACCT-00008,Savings,Amelia King
+ACCT-00009,Commercial Loan,Cobalt Foods PLC
+ACCT-00010,Commercial Checking,Cobalt Foods PLC
+ACCT-00011,Commercial Loan,Cobalt Foods PLC
+ACCT-00012,Loan,Abigail Evans
+ACCT-00013,Credit Card,Michael Cook
+ACCT-00014,Checking,Michael Cook
+ACCT-00015,Checking,Grace Chen
+ACCT-00016,Savings,Grace Chen
+ACCT-00017,Loan,Grace Chen
+ACCT-00018,Savings,David Moore
+ACCT-00019,Commercial Checking,Ironwood Financial Services Group
+ACCT-00020,Commercial Loan,Ironwood Financial Services Group
+ACCT-00021,Credit Card,Owen Allen
+ACCT-00022,Checking,Owen Allen
+ACCT-00023,Savings,Owen Allen
+ACCT-00024,Checking,Nora Nelson
+ACCT-00025,Savings,Jack Parker
+ACCT-00026,Loan,Jack Parker
+ACCT-00027,Loan,Sofia Reed
+ACCT-00028,Credit Card,Sofia Reed
+ACCT-00029,Checking,Sofia Reed
+ACCT-00030,Commercial Loan,Prime Partners Corp.
+ACCT-00031,Checking,Penelope Thomas
+ACCT-00032,Savings,Penelope Thomas
+ACCT-00033,Savings,Liam Harris
+ACCT-00034,Loan,Liam Harris
+ACCT-00035,Credit Card,Liam Harris
+ACCT-00036,Loan,Emma Young
+ACCT-00037,Credit Card,Mason Adams
+ACCT-00038,Checking,Mason Adams
+ACCT-00039,Commercial Checking,Liberty Holdings Ltd.
+ACCT-00040,Commercial Loan,Liberty Holdings Ltd.
+ACCT-00041,Commercial Checking,Liberty Holdings Ltd.
+ACCT-00042,Savings,Benjamin Rogers
+ACCT-00043,Loan,Evelyn Kim
+ACCT-00044,Credit Card,Evelyn Kim
+ACCT-00045,Credit Card,Alexander Anderson
+ACCT-00046,Checking,Alexander Anderson
+ACCT-00047,Savings,Alexander Anderson
+ACCT-00048,Checking,Scarlett White
+ACCT-00049,Commercial Loan,Vertex Foods Inc.
+ACCT-00050,Commercial Checking,Vertex Foods Inc.
+ACCT-00051,Loan,Victoria Baker
+ACCT-00052,Credit Card,Victoria Baker
+ACCT-00053,Checking,Victoria Baker
+ACCT-00054,Credit Card,Samuel Turner
+ACCT-00055,Checking,Lily Morris
+ACCT-00056,Savings,Lily Morris
+ACCT-00057,Savings,John Johnson
+ACCT-00058,Loan,John Johnson
+ACCT-00059,Credit Card,John Johnson
+ACCT-00060,Commercial Checking,Northstar Financial Services LLC
+ACCT-00061,Credit Card,Jayden Thompson
+ACCT-00062,Checking,Jayden Thompson
+ACCT-00063,Checking,Aria Robinson
+ACCT-00064,Savings,Aria Robinson
+ACCT-00065,Loan,Aria Robinson
+ACCT-00066,Savings,Isaac Green
+ACCT-00067,Loan,Ava Roberts
+ACCT-00068,Credit Card,Ava Roberts
+ACCT-00069,Commercial Loan,Cobalt Partners PLC
+ACCT-00070,Commercial Checking,Cobalt Partners PLC
+ACCT-00071,Commercial Loan,Cobalt Partners PLC
+ACCT-00072,Checking,Isabella Patel
+ACCT-00073,Savings,James Garcia
+ACCT-00074,Loan,James Garcia
+ACCT-00075,Loan,Harper Perez
+ACCT-00076,Credit Card,Harper Perez
+ACCT-00077,Checking,Harper Perez
+ACCT-00078,Credit Card,Henry Lewis
+ACCT-00079,Commercial Checking,Ironwood Holdings Group
+ACCT-00080,Commercial Loan,Ironwood Holdings Group
+ACCT-00081,Savings,Daniel Mitchell
+ACCT-00082,Loan,Daniel Mitchell
+ACCT-00083,Credit Card,Daniel Mitchell
+ACCT-00084,Loan,Chloe Collins
+ACCT-00085,Credit Card,Joseph Nguyen
+ACCT-00086,Checking,Joseph Nguyen
+ACCT-00087,Checking,Zoe Miller
+ACCT-00088,Savings,Zoe Miller
+ACCT-00089,Loan,Zoe Miller
+ACCT-00090,Commercial Loan,Prime Foods Corp.
+ACCT-00091,Loan,Layla Ramirez
+ACCT-00092,Credit Card,Layla Ramirez
+ACCT-00093,Credit Card,Luke Wright
+ACCT-00094,Checking,Luke Wright
+ACCT-00095,Savings,Luke Wright
+ACCT-00096,Checking,Camila Campbell
+ACCT-00097,Savings,Leo Edwards
+ACCT-00098,Loan,Leo Edwards
+ACCT-00099,Commercial Checking,Liberty Financial Services Ltd.
+ACCT-00100,Commercial Loan,Liberty Financial Services Ltd.
+ACCT-00101,Commercial Checking,Liberty Financial Services Ltd.
+ACCT-00102,Credit Card,Noah Davis
+ACCT-00103,Checking,Sophia Martin
+ACCT-00104,Savings,Sophia Martin
+ACCT-00105,Savings,Logan Clark
+ACCT-00106,Loan,Logan Clark
+ACCT-00107,Credit Card,Logan Clark
+ACCT-00108,Loan,Amelia King
+ACCT-00109,Commercial Loan,Vertex Partners Inc.
+ACCT-00110,Commercial Checking,Vertex Partners Inc.
+ACCT-00111,Checking,Abigail Evans
+ACCT-00112,Savings,Abigail Evans
+ACCT-00113,Loan,Abigail Evans
+ACCT-00114,Savings,Michael Cook
+ACCT-00115,Loan,Grace Chen
+ACCT-00116,Credit Card,Grace Chen
+ACCT-00117,Credit Card,David Moore
+ACCT-00118,Checking,David Moore
+ACCT-00119,Savings,David Moore
+ACCT-00120,Commercial Checking,Northstar Holdings LLC
+ACCT-00121,Savings,Owen Allen
+ACCT-00122,Loan,Owen Allen
+ACCT-00123,Loan,Nora Nelson
+ACCT-00124,Credit Card,Nora Nelson
+ACCT-00125,Checking,Nora Nelson
+ACCT-00126,Credit Card,Jack Parker
+ACCT-00127,Checking,Sofia Reed
+ACCT-00128,Savings,Sofia Reed
+ACCT-00129,Commercial Loan,Cobalt Foods PLC
+ACCT-00130,Commercial Checking,Cobalt Foods PLC
+ACCT-00131,Commercial Loan,Cobalt Foods PLC
+ACCT-00132,Loan,Penelope Thomas
+ACCT-00133,Credit Card,Liam Harris
+ACCT-00134,Checking,Liam Harris
+ACCT-00135,Checking,Emma Young
+ACCT-00136,Savings,Emma Young
+ACCT-00137,Loan,Emma Young
+ACCT-00138,Savings,Mason Adams
+ACCT-00139,Commercial Checking,Ironwood Financial Services Group
+ACCT-00140,Commercial Loan,Ironwood Financial Services Group
+ACCT-00141,Credit Card,Benjamin Rogers
+ACCT-00142,Checking,Benjamin Rogers
+ACCT-00143,Savings,Benjamin Rogers
+ACCT-00144,Checking,Evelyn Kim
+ACCT-00145,Savings,Alexander Anderson
+ACCT-00146,Loan,Alexander Anderson
+ACCT-00147,Loan,Scarlett White
+ACCT-00148,Credit Card,Scarlett White
+ACCT-00149,Checking,Scarlett White
+ACCT-00150,Commercial Loan,Prime Partners Corp.
+ACCT-00151,Checking,Victoria Baker
+ACCT-00152,Savings,Victoria Baker
+ACCT-00153,Savings,Samuel Turner
+ACCT-00154,Loan,Samuel Turner
+ACCT-00155,Credit Card,Samuel Turner
+ACCT-00156,Loan,Lily Morris
+ACCT-00157,Credit Card,John Johnson
+ACCT-00158,Checking,John Johnson
+ACCT-00159,Commercial Checking,Liberty Holdings Ltd.
+ACCT-00160,Commercial Loan,Liberty Holdings Ltd.
+ACCT-00161,Commercial Checking,Liberty Holdings Ltd.
+ACCT-00162,Savings,Jayden Thompson
+ACCT-00163,Loan,Aria Robinson
+ACCT-00164,Credit Card,Aria Robinson
+ACCT-00165,Credit Card,Isaac Green
+ACCT-00166,Checking,Isaac Green
+ACCT-00167,Savings,Isaac Green
+ACCT-00168,Checking,Ava Roberts
+ACCT-00169,Commercial Loan,Vertex Foods Inc.
+ACCT-00170,Commercial Checking,Vertex Foods Inc.
+ACCT-00171,Loan,Isabella Patel
+ACCT-00172,Credit Card,Isabella Patel
+ACCT-00173,Checking,Isabella Patel
+ACCT-00174,Credit Card,James Garcia
+ACCT-00175,Checking,Harper Perez
+ACCT-00176,Savings,Harper Perez
+ACCT-00177,Savings,Henry Lewis
+ACCT-00178,Loan,Henry Lewis
+ACCT-00179,Credit Card,Henry Lewis
+ACCT-00180,Commercial Checking,Northstar Financial Services LLC
+ACCT-00181,Credit Card,Daniel Mitchell
+ACCT-00182,Checking,Daniel Mitchell
+ACCT-00183,Checking,Chloe Collins
+ACCT-00184,Savings,Chloe Collins
+ACCT-00185,Loan,Chloe Collins
+ACCT-00186,Savings,Joseph Nguyen
+ACCT-00187,Loan,Zoe Miller
+ACCT-00188,Credit Card,Zoe Miller
+ACCT-00189,Commercial Loan,Cobalt Partners PLC
+ACCT-00190,Commercial Checking,Cobalt Partners PLC
+ACCT-00191,Commercial Loan,Cobalt Partners PLC
+ACCT-00192,Checking,Layla Ramirez
+ACCT-00193,Savings,Luke Wright
+ACCT-00194,Loan,Luke Wright
+ACCT-00195,Loan,Camila Campbell
+ACCT-00196,Credit Card,Camila Campbell
+ACCT-00197,Checking,Camila Campbell
+ACCT-00198,Credit Card,Leo Edwards
+ACCT-00199,Commercial Checking,Ironwood Holdings Group
+ACCT-00200,Commercial Loan,Ironwood Holdings Group

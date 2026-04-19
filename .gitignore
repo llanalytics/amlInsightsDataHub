@@ -1,0 +1,6 @@
+# Ignore all data subdirectories by default
+/data/*/
+
+# Keep sample data tracked
+!/data/sample/
+!/data/sample/**

@@ -38,7 +38,7 @@ BY,BLR,Belarus
 BZ,BLZ,Belize
 CA,CAN,Canada
 CC,CCK,Cocos (Keeling) Islands
-CD,COD,"Congo, The Democratic Republic of the"
+CD,COD,"Congo, Democratic Republic of the"
 CF,CAF,Central African Republic
 CG,COG,Congo
 CH,CHE,Switzerland
@@ -75,7 +75,7 @@ FM,FSM,"Micronesia, Federated States of"
 FO,FRO,Faroe Islands
 FR,FRA,France
 GA,GAB,Gabon
-GB,GBR,United Kingdom
+GB,GBR,United Kingdom of Great Britain and Northern Ireland
 GD,GRD,Grenada
 GE,GEO,Georgia
 GF,GUF,French Guiana
@@ -164,7 +164,7 @@ NE,NER,Niger
 NF,NFK,Norfolk Island
 NG,NGA,Nigeria
 NI,NIC,Nicaragua
-NL,NLD,Netherlands
+NL,NLD,"Netherlands, Kingdom of the"
 NO,NOR,Norway
 NP,NPL,Nepal
 NR,NRU,Nauru
@@ -223,7 +223,7 @@ TL,TLS,Timor-Leste
 TM,TKM,Turkmenistan
 TN,TUN,Tunisia
 TO,TON,Tonga
-TR,TUR,Turkey
+TR,TUR,Türkiye
 TT,TTO,Trinidad and Tobago
 TV,TUV,Tuvalu
 TW,TWN,"Taiwan, Province of China"
@@ -231,14 +231,14 @@ TZ,TZA,"Tanzania, United Republic of"
 UA,UKR,Ukraine
 UG,UGA,Uganda
 UM,UMI,United States Minor Outlying Islands
-US,USA,United States
+US,USA,United States of America
 UY,URY,Uruguay
 UZ,UZB,Uzbekistan
-VA,VAT,Holy See (Vatican City State)
+VA,VAT,Holy See
 VC,VCT,Saint Vincent and the Grenadines
 VE,VEN,"Venezuela, Bolivarian Republic of"
-VG,VGB,"Virgin Islands, British"
-VI,VIR,"Virgin Islands, U.S."
+VG,VGB,Virgin Islands (British)
+VI,VIR,Virgin Islands (U.S.)
 VN,VNM,Viet Nam
 VU,VUT,Vanuatu
 WF,WLF,Wallis and Futuna

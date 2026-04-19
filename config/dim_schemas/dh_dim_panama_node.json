@@ -1,0 +1,54 @@
+{
+  "required": ["node_id", "node_type", "name", "source_id"],
+  "properties": {
+    "node_id": {
+      "type": "string",
+      "maxLength": 40,
+      "dq": {
+        "not_null": true,
+        "regex": "^[0-9]+$"
+      }
+    },
+    "node_type": {
+      "type": "string",
+      "maxLength": 20,
+      "dq": {
+        "not_null": true,
+        "regex": "^(entity|officer|intermediary|address|other)$"
+      }
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 500,
+      "dq": {
+        "not_null": true
+      }
+    },
+    "source_id": {
+      "type": "string",
+      "maxLength": 60,
+      "dq": {
+        "not_null": true
+      }
+    },
+    "countries": { "type": "string", "maxLength": 1200 },
+    "country_codes": { "type": "string", "maxLength": 400 },
+    "jurisdiction": { "type": "string", "maxLength": 80 },
+    "jurisdiction_description": { "type": "string", "maxLength": 200 },
+    "status": { "type": "string", "maxLength": 120 },
+    "valid_until": { "type": "string", "maxLength": 255 },
+    "note": { "type": "string", "maxLength": 4000 },
+    "original_name": { "type": "string", "maxLength": 500 },
+    "former_name": { "type": "string", "maxLength": 500 },
+    "address": { "type": "string", "maxLength": 2000 },
+    "company_type": { "type": "string", "maxLength": 200 },
+    "internal_id": { "type": "string", "maxLength": 80 },
+    "incorporation_date": { "type": "string", "maxLength": 40 },
+    "inactivation_date": { "type": "string", "maxLength": 40 },
+    "struck_off_date": { "type": "string", "maxLength": 40 },
+    "dorm_date": { "type": "string", "maxLength": 40 },
+    "service_provider": { "type": "string", "maxLength": 255 },
+    "ibcRUC": { "type": "string", "maxLength": 120 }
+  },
+  "additionalProperties": false
+}

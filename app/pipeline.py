@@ -26,6 +26,7 @@ from app.models import (
     DHDQRule,
     DHBridgeCustomerAccount,
     DHBridgeCustomerAssociatedParty,
+    DHBridgePanamaRelationship,
     DHBridgeHouseholdCustomer,
     DHDimAccount,
     DHDimAssociatedParty,
@@ -33,6 +34,7 @@ from app.models import (
     DHDimCountry,
     DHDimCurrency,
     DHDimOfacSdn,
+    DHDimPanamaNode,
     DHDimCustomer,
     DHDimHousehold,
     DHDimSubAccount,
@@ -69,6 +71,7 @@ DIM_SPECS: list[DimSpec] = [
     DimSpec("dh_dim_country", "dh_dim_country", DHDimCountry, "country_code_2"),
     DimSpec("dh_dim_currency", "dh_dim_currency", DHDimCurrency, "currency_code"),
     DimSpec("dh_dim_ofac_sdn", "dh_dim_ofac_sdn", DHDimOfacSdn, "sdn_uid"),
+    DimSpec("dh_dim_panama_node", "dh_dim_panama_node", DHDimPanamaNode, "node_id"),
     DimSpec("dh_dim_counterparty_account", "dh_dim_counterparty_account", DHDimCounterpartyAccount, "counterparty_account_key"),
     DimSpec("dh_dim_transaction_type", "dh_dim_transaction_type", DHDimTransactionType, "transaction_type_code"),
 ]
@@ -78,6 +81,7 @@ TABLE_PROCESS_ORDER: list[str] = [
     "dh_bridge_household_customer",
     "dh_bridge_customer_account",
     "dh_bridge_customer_associated_party",
+    "dh_bridge_panama_relationship",
     "dh_fact_cash",
 ]
 
@@ -89,6 +93,7 @@ TABLE_TO_ENTITY: dict[str, str] = {
     "dh_bridge_household_customer": "dh_bridge_household_customer",
     "dh_bridge_customer_account": "dh_bridge_customer_account",
     "dh_bridge_customer_associated_party": "dh_bridge_customer_associated_party",
+    "dh_bridge_panama_relationship": "dh_bridge_panama_relationship",
     "dh_fact_cash": "cash",
 }
 
@@ -114,17 +119,22 @@ def _scd_upsert(
     static_fields: dict | None,
     now: datetime,
     source_file: str,
+    key_fields: list[str] | None = None,
 ) -> None:
     if not natural_key:
         return
-    current = db.execute(
-        select(model).where(
-            and_(
-                getattr(model, natural_field) == natural_key,
-                model.is_current.is_(True),
-            )
-        )
-    ).scalar_one_or_none()
+    key_fields = key_fields or []
+
+    filters = [
+        getattr(model, natural_field) == natural_key,
+        model.is_current.is_(True),
+    ]
+    for field_name in key_fields:
+        if field_name not in static_fields:
+            continue
+        filters.append(getattr(model, field_name) == static_fields[field_name])
+
+    current = db.execute(select(model).where(and_(*filters))).scalar_one_or_none()
 
     attr_json = json.dumps(attrs, sort_keys=True)
     static_fields = static_fields or {}
@@ -174,40 +184,40 @@ def _is_primary_relationship(relationship_type: str | None) -> bool:
     return (relationship_type or "").strip().casefold() == PRIMARY_RELATIONSHIP_TYPE.casefold()
 
 
-def _active_customer_account_rows(db: Session, customer_key: str) -> list[DHBridgeCustomerAccount]:
+def _active_account_customer_rows(db: Session, account_key: str) -> list[DHBridgeCustomerAccount]:
     return db.execute(
         select(DHBridgeCustomerAccount).where(
             and_(
-                DHBridgeCustomerAccount.customer_key == customer_key,
+                DHBridgeCustomerAccount.account_key == account_key,
                 DHBridgeCustomerAccount.is_current.is_(True),
             )
         )
     ).scalars().all()
 
 
-def _validate_customer_primary_relationship_rule(
+def _validate_account_primary_relationship_rule(
     db: Session,
     customer_key: str,
     account_key: str,
     relationship_type: str | None,
 ) -> str | None:
-    active_rows = _active_customer_account_rows(db, customer_key)
+    active_rows = _active_account_customer_rows(db, account_key)
 
     # Simulate post-upsert state for the target customer/account pair.
-    remaining_rows = [row for row in active_rows if row.account_key != account_key]
+    remaining_rows = [row for row in active_rows if row.customer_key != customer_key]
     primary_count = sum(1 for row in remaining_rows if _is_primary_relationship(row.relationship_type))
     if _is_primary_relationship(relationship_type):
         primary_count += 1
 
     if primary_count == 0:
         return (
-            "Business rule failed: customer must have exactly one Primary relationship_type in "
+            "Business rule failed: account must have exactly one Primary relationship_type in "
             "dh_bridge_customer_account; operation would leave zero Primary relationships."
         )
 
     if primary_count > 1:
         return (
-            "Business rule failed: customer must have exactly one Primary relationship_type in "
+            "Business rule failed: account must have exactly one Primary relationship_type in "
             "dh_bridge_customer_account; operation would create multiple Primary relationships."
         )
 
@@ -250,6 +260,48 @@ def _ensure_bridge_customer_account(
             valid_to=None,
             is_current=True,
             relationship_type=rel,
+        )
+    )
+
+
+def _ensure_bridge_panama_relationship(
+    db: Session,
+    key_values: dict[str, str],
+    payload: dict[str, str | None],
+    now: datetime,
+) -> None:
+    filters = [getattr(DHBridgePanamaRelationship, k) == v for k, v in key_values.items()]
+    current = db.execute(
+        select(DHBridgePanamaRelationship).where(and_(*filters, DHBridgePanamaRelationship.is_current.is_(True)))
+    ).scalar_one_or_none()
+
+    normalized_payload = {k: (v or None) for k, v in payload.items()}
+
+    if current is None:
+        db.add(
+            DHBridgePanamaRelationship(
+                **key_values,
+                valid_from=now,
+                valid_to=None,
+                is_current=True,
+                **normalized_payload,
+            )
+        )
+        return
+
+    unchanged = all((getattr(current, k) or None) == v for k, v in normalized_payload.items())
+    if unchanged:
+        return
+
+    current.is_current = False
+    current.valid_to = now
+    db.add(
+        DHBridgePanamaRelationship(
+            **key_values,
+            valid_from=now,
+            valid_to=None,
+            is_current=True,
+            **normalized_payload,
         )
     )
 
@@ -368,10 +420,24 @@ def _process_dim_row(db: Session, row: dict[str, str], file_name: str, now: date
         if spec.table_name == "dh_dim_customer" and key == "business_unit":
             static_fields["business_unit"] = value or None
             continue
+        if spec.table_name == "dh_dim_panama_node" and key == "node_type":
+            static_fields["node_type"] = value or None
+            continue
         if value:
             attrs[key] = value
 
-    _scd_upsert(db, spec.model, spec.natural_field, natural_key, attrs, static_fields, now, file_name)
+    key_fields = ["node_type"] if spec.table_name == "dh_dim_panama_node" else None
+    _scd_upsert(
+        db,
+        spec.model,
+        spec.natural_field,
+        natural_key,
+        attrs,
+        static_fields,
+        now,
+        file_name,
+        key_fields=key_fields,
+    )
     return None
 
 
@@ -411,7 +477,7 @@ def _process_bridge_customer_account_row(db: Session, row: dict[str, str], now: 
     if not _dim_exists(db, DHDimAccount, "account_key", account_key):
         return f"Referential integrity failed: account_key '{account_key}' not found in dh_dim_account."
 
-    primary_rule_error = _validate_customer_primary_relationship_rule(
+    primary_rule_error = _validate_account_primary_relationship_rule(
         db,
         customer_key,
         account_key,
@@ -454,12 +520,56 @@ def _process_bridge_customer_associated_party_row(db: Session, row: dict[str, st
     return None
 
 
+def _process_bridge_panama_relationship_row(db: Session, row: dict[str, str], now: datetime) -> str | None:
+    missing = _require_fields(row, ["start_node_id", "end_node_id", "rel_type", "source_id"])
+    if missing:
+        return f"Missing required fields: {', '.join(missing)}"
+
+    start_node_id = _val(row, "start_node_id")
+    end_node_id = _val(row, "end_node_id")
+    rel_type = _val(row, "rel_type")
+    link = _val(row, "link")
+    status = _val(row, "status")
+    start_date = _val(row, "start_date")
+    end_date = _val(row, "end_date")
+    source_id = _val(row, "source_id")
+
+    if not _dim_exists(db, DHDimPanamaNode, "node_id", start_node_id):
+        return (
+            "Referential integrity failed: "
+            f"start_node_id '{start_node_id}' not found in dh_dim_panama_node."
+        )
+    if not _dim_exists(db, DHDimPanamaNode, "node_id", end_node_id):
+        return (
+            "Referential integrity failed: "
+            f"end_node_id '{end_node_id}' not found in dh_dim_panama_node."
+        )
+
+    _ensure_bridge_panama_relationship(
+        db,
+        {
+            "start_node_id": start_node_id,
+            "end_node_id": end_node_id,
+            "rel_type": rel_type,
+        },
+        {
+            "link": link or None,
+            "status": status or None,
+            "start_date": start_date or None,
+            "end_date": end_date or None,
+            "source_id": source_id or None,
+        },
+        now,
+    )
+    return None
+
+
 def _process_fact_cash_row(db: Session, row: dict[str, str], file_name: str, now: datetime) -> str | None:
     required_fields = [
         "transaction_key",
         "account_key",
         "transaction_type_code",
-        "country_code",
+        "country_code_2",
         "currency_code",
         "counterparty_account_key",
         "amount",
@@ -471,10 +581,11 @@ def _process_fact_cash_row(db: Session, row: dict[str, str], file_name: str, now
     transaction_key = _val(row, "transaction_key")
     account_key = _val(row, "account_key")
     transaction_type_code = _val(row, "transaction_type_code")
-    country_code = _val(row, "country_code")
+    country_code_2 = _val(row, "country_code_2")
     currency_code = _val(row, "currency_code")
     counterparty_account_key = _val(row, "counterparty_account_key")
     sub_account_key = _val(row, "sub_account_key")
+    secondary_account_key = _val(row, "secondary_account_key")
 
     existing = db.execute(select(DHFactCash).where(DHFactCash.transaction_key == transaction_key)).scalar_one_or_none()
     if existing is not None:
@@ -487,14 +598,19 @@ def _process_fact_cash_row(db: Session, row: dict[str, str], file_name: str, now
             "Referential integrity failed: "
             f"transaction_type_code '{transaction_type_code}' not found in dh_dim_transaction_type."
         )
-    if not _dim_exists(db, DHDimCountry, "country_code_2", country_code):
-        return f"Referential integrity failed: country_code '{country_code}' not found in dh_dim_country."
+    if not _dim_exists(db, DHDimCountry, "country_code_2", country_code_2):
+        return f"Referential integrity failed: country_code_2 '{country_code_2}' not found in dh_dim_country."
     if not _dim_exists(db, DHDimCurrency, "currency_code", currency_code):
         return f"Referential integrity failed: currency_code '{currency_code}' not found in dh_dim_currency."
     if not _dim_exists(db, DHDimCounterpartyAccount, "counterparty_account_key", counterparty_account_key):
         return (
             "Referential integrity failed: "
             f"counterparty_account_key '{counterparty_account_key}' not found in dh_dim_counterparty_account."
+        )
+    if secondary_account_key and not _dim_exists(db, DHDimAccount, "account_key", secondary_account_key):
+        return (
+            "Referential integrity failed: "
+            f"secondary_account_key '{secondary_account_key}' not found in dh_dim_account."
         )
     if sub_account_key and not _dim_exists(db, DHDimSubAccount, "sub_account_key", sub_account_key):
         return f"Referential integrity failed: sub_account_key '{sub_account_key}' not found in dh_dim_sub_account."
@@ -509,9 +625,10 @@ def _process_fact_cash_row(db: Session, row: dict[str, str], file_name: str, now
             transaction_key=transaction_key,
             account_key=account_key,
             transaction_type_code=transaction_type_code,
-            country_code=country_code,
+            country_code_2=country_code_2,
             currency_code=currency_code,
             counterparty_account_key=counterparty_account_key,
+            secondary_account_key=secondary_account_key or None,
             sub_account_key=sub_account_key or None,
             amount=amount,
             transaction_ts=_parse_dt(row.get("transaction_ts") or ""),
@@ -707,6 +824,7 @@ def _table_processors() -> dict[str, Callable[[Session, dict[str, str], str, dat
             "dh_bridge_household_customer": lambda db, row, _f, now: _process_bridge_household_customer_row(db, row, now),
             "dh_bridge_customer_account": lambda db, row, _f, now: _process_bridge_customer_account_row(db, row, now),
             "dh_bridge_customer_associated_party": lambda db, row, _f, now: _process_bridge_customer_associated_party_row(db, row, now),
+            "dh_bridge_panama_relationship": lambda db, row, _f, now: _process_bridge_panama_relationship_row(db, row, now),
             "dh_fact_cash": _process_fact_cash_row,
         }
     )

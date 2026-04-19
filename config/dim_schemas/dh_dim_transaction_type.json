@@ -1,20 +1,35 @@
 {
-  "required": ["transaction_type_code", "description"],
+  "required": ["transaction_type_code","aml_classification","direction"],
   "properties": {
     "transaction_type_code": {
       "type": "string",
       "maxLength": 50,
       "dq": {
-        "not_null": true,
-        "regex": "^[A-Z_]{4,50}$"
+        "not_null": true
       }
     },
-    "description": {
+    "aml_classification": {
       "type": "string",
-      "maxLength": 120,
+      "maxLength": 50,
       "dq": {
         "not_null": true
       }
+    },
+      "aml_sub_classification": {
+      "type": "string",
+      "maxLength": 50
+    },
+      "direction": {
+      "type": "string",
+      "maxLength": 50,
+      "dq": {
+        "not_null": true,
+        "lookup_name": "Transaction_Direction"
+      }
+    },
+      "mechanism": {
+      "type": "string",
+      "maxLength": 50
     }
   },
   "additionalProperties": false

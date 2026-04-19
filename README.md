@@ -24,6 +24,7 @@ Dimensions:
 - `dh_dim_country`
 - `dh_dim_currency`
 - `dh_dim_ofac_sdn`
+- `dh_dim_panama_node`
 - `dh_dim_counterparty_account`
 - `dh_dim_transaction_type`
 
@@ -31,6 +32,7 @@ Bridges:
 - `dh_bridge_household_customer`
 - `dh_bridge_customer_account`
 - `dh_bridge_customer_associated_party`
+- `dh_bridge_panama_relationship`
 
 Fact:
 - `dh_fact_cash`
@@ -59,11 +61,13 @@ Supported prefixes:
 - `dh_dim_country`
 - `dh_dim_currency`
 - `dh_dim_ofac_sdn`
+- `dh_dim_panama_node`
 - `dh_dim_counterparty_account`
 - `dh_dim_transaction_type`
 - `dh_bridge_household_customer`
 - `dh_bridge_customer_account`
 - `dh_bridge_customer_associated_party`
+- `dh_bridge_panama_relationship`
 - `dh_fact_cash`
 
 Unsupported filenames are moved to rejected and logged as DQ issues.
@@ -206,3 +210,29 @@ This updates:
 
 Pipeline support:
 - SDN rows are loaded into `dh_dim_ofac_sdn` as SCD Type 2 rows keyed by `sdn_uid`.
+
+
+## ISO Reference Data
+
+Use these scripts to refresh ISO-backed reference sample files:
+
+- `./scripts/update_country_sample.sh` updates `data/sample/dh_dim_country_sample.csv`
+- `./scripts/update_currency_sample.sh` updates `data/sample/dh_dim_currency_sample.csv`
+
+Combined refresh (country + currency + OFAC SDN + Panama Papers):
+- `./scripts/update_iso_reference_samples.sh`
+
+
+## Panama Papers Reference Data
+
+Use this script to refresh Panama Papers nodes and relationships from ICIJ's Offshore Leaks dataset:
+
+- `./scripts/update_panama_papers_samples.sh`
+
+This updates:
+- `data/sample/dh_dim_panama_node_sample.csv`
+- `data/sample/dh_bridge_panama_relationship_sample.csv`
+
+Pipeline support:
+- Nodes are loaded into `dh_dim_panama_node` as SCD Type 2 rows keyed by `node_id + node_type`.
+- Relationships are loaded into `dh_bridge_panama_relationship` with SCD history keyed by `start_node_id + end_node_id + rel_type`.

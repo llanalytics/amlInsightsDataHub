@@ -1,5 +1,5 @@
 {
-  "required": ["account_key", "account_type"],
+  "required": ["account_key", "account_type","account_name"],
   "properties": {
     "account_key": {
       "type": "string",
@@ -16,22 +16,14 @@
         "not_null": true,
         "lookup_name": "Account_Type"
       }
-    }
-  },
+    },
     "account_name": {
       "type": "string",
       "maxLength": 80,
       "dq": {
         "not_null": true
       }
-    },
-    "product_type": {
-      "type": "string",
-      "maxLength": 80,
-      "dq": {
-        "not_null": true,
-        "lookup_name": "Product_Type"
-      }
-    },
+    }
+  },
   "additionalProperties": false
 }

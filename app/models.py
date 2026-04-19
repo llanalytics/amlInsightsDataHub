@@ -122,6 +122,12 @@ class DHDimOfacSdn(SCDBase, Base):
     sdn_uid: Mapped[str] = mapped_column(String(40), primary_key=True)
 
 
+class DHDimPanamaNode(SCDBase, Base):
+    __tablename__ = "dh_dim_panama_node"
+    node_id: Mapped[str] = mapped_column(String(40), primary_key=True)
+    node_type: Mapped[str] = mapped_column(String(20), primary_key=True)
+
+
 class DHDimCounterpartyAccount(SCDBase, Base):
     __tablename__ = "dh_dim_counterparty_account"
     counterparty_account_key: Mapped[str] = mapped_column(String(100), primary_key=True)
@@ -163,13 +169,30 @@ class DHBridgeCustomerAssociatedParty(Base):
     is_current: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
 
 
+class DHBridgePanamaRelationship(Base):
+    __tablename__ = "dh_bridge_panama_relationship"
+
+    start_node_id: Mapped[str] = mapped_column(String(40), primary_key=True)
+    end_node_id: Mapped[str] = mapped_column(String(40), primary_key=True)
+    rel_type: Mapped[str] = mapped_column(String(60), primary_key=True)
+    valid_from: Mapped[datetime] = mapped_column(DateTime, primary_key=True)
+    valid_to: Mapped[datetime | None] = mapped_column(DateTime)
+    is_current: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    link: Mapped[str | None] = mapped_column(String(120))
+    status: Mapped[str | None] = mapped_column(String(60))
+    start_date: Mapped[str | None] = mapped_column(String(40))
+    end_date: Mapped[str | None] = mapped_column(String(40))
+    source_id: Mapped[str | None] = mapped_column(String(60), index=True)
+
+
 class DHFactCash(Base):
     __tablename__ = "dh_fact_cash"
 
     transaction_key: Mapped[str] = mapped_column(String(120), primary_key=True)
     account_key: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
+    secondary_account_key: Mapped[str | None] = mapped_column(String(100), index=True)
     transaction_type_code: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
-    country_code: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
+    country_code_2: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
     currency_code: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
     counterparty_account_key: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
     sub_account_key: Mapped[str | None] = mapped_column(String(100), index=True)
