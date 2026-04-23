@@ -107,6 +107,11 @@ class DHDimSubAccount(SCDBase, Base):
     sub_account_key: Mapped[str] = mapped_column(String(100), primary_key=True)
 
 
+class DHDimBranch(SCDBase, Base):
+    __tablename__ = "dh_dim_branch"
+    branch_key: Mapped[str] = mapped_column(String(100), primary_key=True)
+
+
 class DHDimCountry(SCDBase, Base):
     __tablename__ = "dh_dim_country"
     country_code_2: Mapped[str] = mapped_column(String(20), primary_key=True)
@@ -195,6 +200,7 @@ class DHFactCash(Base):
     country_code_2: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
     currency_code: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
     counterparty_account_key: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
+    branch_key: Mapped[str | None] = mapped_column(String(100), index=True)
     sub_account_key: Mapped[str | None] = mapped_column(String(100), index=True)
     amount: Mapped[float] = mapped_column(Float, nullable=False)
     transaction_ts: Mapped[datetime] = mapped_column(DateTime, nullable=False)

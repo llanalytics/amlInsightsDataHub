@@ -30,6 +30,7 @@ from app.models import (
     DHBridgeHouseholdCustomer,
     DHDimAccount,
     DHDimAssociatedParty,
+    DHDimBranch,
     DHDimCounterpartyAccount,
     DHDimCountry,
     DHDimCurrency,
@@ -63,17 +64,18 @@ class DimSpec:
 
 
 DIM_SPECS: list[DimSpec] = [
+    DimSpec("dh_dim_country", "dh_dim_country", DHDimCountry, "country_code_2"),
+    DimSpec("dh_dim_currency", "dh_dim_currency", DHDimCurrency, "currency_code"),
+    DimSpec("dh_dim_transaction_type", "dh_dim_transaction_type", DHDimTransactionType, "transaction_type_code"),
     DimSpec("dh_dim_household", "dh_dim_household", DHDimHousehold, "household_key"),
     DimSpec("dh_dim_customer", "dh_dim_customer", DHDimCustomer, "customer_key"),
     DimSpec("dh_dim_associated_party", "dh_dim_associated_party", DHDimAssociatedParty, "associated_party_key"),
     DimSpec("dh_dim_account", "dh_dim_account", DHDimAccount, "account_key"),
     DimSpec("dh_dim_sub_account", "dh_dim_sub_account", DHDimSubAccount, "sub_account_key"),
-    DimSpec("dh_dim_country", "dh_dim_country", DHDimCountry, "country_code_2"),
-    DimSpec("dh_dim_currency", "dh_dim_currency", DHDimCurrency, "currency_code"),
+    DimSpec("dh_dim_branch", "dh_dim_branch", DHDimBranch, "branch_key"),
     DimSpec("dh_dim_ofac_sdn", "dh_dim_ofac_sdn", DHDimOfacSdn, "sdn_uid"),
     DimSpec("dh_dim_panama_node", "dh_dim_panama_node", DHDimPanamaNode, "node_id"),
     DimSpec("dh_dim_counterparty_account", "dh_dim_counterparty_account", DHDimCounterpartyAccount, "counterparty_account_key"),
-    DimSpec("dh_dim_transaction_type", "dh_dim_transaction_type", DHDimTransactionType, "transaction_type_code"),
 ]
 
 TABLE_PROCESS_ORDER: list[str] = [
@@ -584,6 +586,7 @@ def _process_fact_cash_row(db: Session, row: dict[str, str], file_name: str, now
     country_code_2 = _val(row, "country_code_2")
     currency_code = _val(row, "currency_code")
     counterparty_account_key = _val(row, "counterparty_account_key")
+    branch_key = _val(row, "branch_key")
     sub_account_key = _val(row, "sub_account_key")
     secondary_account_key = _val(row, "secondary_account_key")
 
@@ -607,6 +610,8 @@ def _process_fact_cash_row(db: Session, row: dict[str, str], file_name: str, now
             "Referential integrity failed: "
             f"counterparty_account_key '{counterparty_account_key}' not found in dh_dim_counterparty_account."
         )
+    if branch_key and not _dim_exists(db, DHDimBranch, "branch_key", branch_key):
+        return f"Referential integrity failed: branch_key '{branch_key}' not found in dh_dim_branch."
     if secondary_account_key and not _dim_exists(db, DHDimAccount, "account_key", secondary_account_key):
         return (
             "Referential integrity failed: "
@@ -628,6 +633,7 @@ def _process_fact_cash_row(db: Session, row: dict[str, str], file_name: str, now
             country_code_2=country_code_2,
             currency_code=currency_code,
             counterparty_account_key=counterparty_account_key,
+            branch_key=branch_key or None,
             secondary_account_key=secondary_account_key or None,
             sub_account_key=sub_account_key or None,
             amount=amount,
@@ -867,26 +873,57 @@ def run_cash_pipeline(db: Session, job_name: str = "cash_pipeline") -> dict:
     try:
         _preflight_schema_lov_alignment()
 
-        for table_name in TABLE_PROCESS_ORDER:
-            for f in sorted(files_by_table[table_name]):
+        print(f"[pipeline] Starting run {run_id} with {run.files_seen} file(s)", flush=True)
+        print(f"[pipeline] Table processing order count: {len(TABLE_PROCESS_ORDER)}", flush=True)
+
+        for table_idx, table_name in enumerate(TABLE_PROCESS_ORDER, start=1):
+            table_files = sorted(files_by_table[table_name])
+            print(
+                f"[pipeline] [{table_idx}/{len(TABLE_PROCESS_ORDER)}] {table_name}: "
+                f"{len(table_files)} file(s)",
+                flush=True,
+            )
+
+            for file_idx, f in enumerate(table_files, start=1):
+                print(
+                    f"[pipeline]   ({file_idx}/{len(table_files)}) processing {f.name}",
+                    flush=True,
+                )
                 summary = _run_for_file(db, run_id, table_name, f, processors[table_name])
                 run.files_processed += 1
                 run.records_read += summary.read
                 run.records_loaded += summary.loaded
                 run.records_rejected += summary.rejected
                 db.commit()
+                print(
+                    f"[pipeline]   completed {f.name}: "
+                    f"read={summary.read}, loaded={summary.loaded}, rejected={summary.rejected} | "
+                    f"files_processed={run.files_processed}/{run.files_seen}",
+                    flush=True,
+                )
 
-        for f in unknown_files:
+        if unknown_files:
+            print(f"[pipeline] Processing {len(unknown_files)} unknown file(s)", flush=True)
+
+        for idx, f in enumerate(unknown_files, start=1):
+            print(f"[pipeline]   (unknown {idx}/{len(unknown_files)}) processing {f.name}", flush=True)
             summary = _process_unknown_file(db, run_id, f)
             run.files_processed += 1
             run.records_read += summary.read
             run.records_loaded += summary.loaded
             run.records_rejected += summary.rejected
             db.commit()
+            print(
+                f"[pipeline]   completed unknown {f.name}: "
+                f"read={summary.read}, loaded={summary.loaded}, rejected={summary.rejected} | "
+                f"files_processed={run.files_processed}/{run.files_seen}",
+                flush=True,
+            )
 
         run.status = "success"
         run.ended_at = _utc_now()
         db.commit()
+        print(f"[pipeline] Run {run_id} finished with status=success", flush=True)
     except Exception as exc:
         db.rollback()
         run = db.execute(select(DHJobRun).where(DHJobRun.job_run_id == run_id)).scalar_one()
@@ -894,6 +931,7 @@ def run_cash_pipeline(db: Session, job_name: str = "cash_pipeline") -> dict:
         run.ended_at = _utc_now()
         run.notes = str(exc)
         db.commit()
+        print(f"[pipeline] Run {run_id} failed: {exc}", flush=True)
         raise
 
     return {

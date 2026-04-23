@@ -1,4 +1,5 @@
 transaction_type_code,aml_classification,aml_sub_classification,direction,mechanism
+-1,Cash,NA,Inbound,NA
 10,External Funds Transfer,,Outbound,Wire
 20,External Funds Transfer,,Inbound,Wire
 30,External Funds Transfer,,Outbound,ACH
@@ -7,5 +8,9 @@ transaction_type_code,aml_classification,aml_sub_classification,direction,mechan
 60,Internal Funds Transfer,,Inbound,Online
 70,Cash,,Outbound,Branch
 80,Cash,,Inbound,Branch
-90,Check,,Outbound,Branch
-100,Check,,Inbound,Branch
+90,Cash,,Outbound,ATM
+100,Cash,,Inbound,ATM
+110,Check,,Outbound,Branch
+120,Check,,Inbound,Branch
+130,Check,,Outbound,ATM
+140,Check,,Inbound,ATM

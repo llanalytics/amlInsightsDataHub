@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from fastapi import Depends, FastAPI, Request
+from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import desc, func, select
@@ -8,6 +8,16 @@ from sqlalchemy.orm import Session
 
 from app.config import JOB_PAGE_SIZE
 from app.database import get_db
+from app.graph_layer import (
+    build_customer_primary_account_transactions,
+    build_customer_graph_payload,
+    build_customer_graph_summary,
+    build_graph_payload,
+    build_node_neighbors_payload,
+    build_seed_graph_payload,
+    search_exposure_seeds,
+    search_customer_seeds,
+)
 from app.init_db import init_db
 from app.models import DHDQResult, DHDQRule, DHJobFileStat, DHJobRun
 from app.pipeline import run_cash_pipeline
@@ -157,6 +167,222 @@ def list_dq_violations(limit: int = JOB_PAGE_SIZE, db: Session = Depends(get_db)
 @app.post("/api/jobs/run")
 def run_job(db: Session = Depends(get_db)) -> dict:
     return run_cash_pipeline(db)
+
+
+@app.get("/api/graph/summary")
+def graph_summary(
+    include_surrogates: bool = True,
+    include_ofac_matches: bool = True,
+    include_txn_flow: bool = True,
+    db: Session = Depends(get_db),
+) -> dict:
+    payload = build_graph_payload(
+        db,
+        include_surrogates=include_surrogates,
+        include_ofac_matches=include_ofac_matches,
+        include_txn_flow=include_txn_flow,
+    )
+    return {
+        "snapshot_id": payload["snapshot_id"],
+        "model_version": payload["model_version"],
+        "as_of_ts": payload["as_of_ts"],
+        "node_count": payload["node_count"],
+        "edge_count": payload["edge_count"],
+    }
+
+
+@app.get("/api/graph/elements")
+def graph_elements(
+    include_surrogates: bool = True,
+    include_ofac_matches: bool = True,
+    include_txn_flow: bool = True,
+    db: Session = Depends(get_db),
+) -> dict:
+    return build_graph_payload(
+        db,
+        include_surrogates=include_surrogates,
+        include_ofac_matches=include_ofac_matches,
+        include_txn_flow=include_txn_flow,
+    )
+
+
+@app.get("/api/graph/customer/{customer_key}")
+def graph_customer(
+    customer_key: str,
+    hops: int = 2,
+    max_nodes: int = 500,
+    max_edges: int = 2000,
+    include_surrogates: bool = True,
+    include_ofac_matches: bool = True,
+    include_txn_flow: bool = True,
+    db: Session = Depends(get_db),
+) -> dict:
+    try:
+        return build_customer_graph_payload(
+            db,
+            customer_key=customer_key,
+            hops=hops,
+            max_nodes=max_nodes,
+            max_edges=max_edges,
+            include_surrogates=include_surrogates,
+            include_ofac_matches=include_ofac_matches,
+            include_txn_flow=include_txn_flow,
+        )
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@app.get("/api/graph/customer-seed-search")
+def graph_customer_seed_search(
+    q: str,
+    limit: int = 20,
+    business_unit: str | None = None,
+    customer_segment: str | None = None,
+    db: Session = Depends(get_db),
+) -> dict:
+    if not q or not q.strip():
+        raise HTTPException(status_code=400, detail="Query parameter 'q' is required.")
+    if limit < 1:
+        raise HTTPException(status_code=400, detail="Query parameter 'limit' must be >= 1.")
+    if limit > 100:
+        limit = 100
+
+    results = search_customer_seeds(
+        db,
+        q=q,
+        limit=limit,
+        business_unit=business_unit,
+        customer_segment=customer_segment,
+    )
+    return {
+        "query": q,
+        "limit": limit,
+        "business_unit": business_unit,
+        "customer_segment": customer_segment,
+        "result_count": len(results),
+        "results": results,
+    }
+
+
+@app.get("/api/graph/exposure-seed-search")
+def graph_exposure_seed_search(
+    q: str,
+    limit: int = 25,
+    db: Session = Depends(get_db),
+) -> dict:
+    if not q or not q.strip():
+        raise HTTPException(status_code=400, detail="Query parameter 'q' is required.")
+    if limit < 1:
+        raise HTTPException(status_code=400, detail="Query parameter 'limit' must be >= 1.")
+    if limit > 200:
+        limit = 200
+
+    results = search_exposure_seeds(
+        db,
+        q=q,
+        limit=limit,
+    )
+    return {
+        "query": q,
+        "limit": limit,
+        "result_count": len(results),
+        "results": results,
+    }
+
+
+@app.get("/api/graph/customer/{customer_key}/summary")
+def graph_customer_summary(
+    customer_key: str,
+    hops: int = 2,
+    include_surrogates: bool = True,
+    include_ofac_matches: bool = True,
+    include_txn_flow: bool = True,
+    db: Session = Depends(get_db),
+) -> dict:
+    try:
+        return build_customer_graph_summary(
+            db,
+            customer_key=customer_key,
+            hops=hops,
+            include_surrogates=include_surrogates,
+            include_ofac_matches=include_ofac_matches,
+            include_txn_flow=include_txn_flow,
+        )
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@app.get("/api/graph/exposure")
+def graph_exposure(
+    node_id: str,
+    hops: int = 2,
+    max_nodes: int = 500,
+    max_edges: int = 2000,
+    include_surrogates: bool = True,
+    include_ofac_matches: bool = True,
+    include_txn_flow: bool = True,
+    db: Session = Depends(get_db),
+) -> dict:
+    try:
+        return build_seed_graph_payload(
+            db,
+            node_id=node_id,
+            hops=hops,
+            max_nodes=max_nodes,
+            max_edges=max_edges,
+            include_surrogates=include_surrogates,
+            include_ofac_matches=include_ofac_matches,
+            include_txn_flow=include_txn_flow,
+        )
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@app.get("/api/graph/customer/{customer_key}/transactions")
+def graph_customer_transactions(
+    customer_key: str,
+    limit: int = 5000,
+    db: Session = Depends(get_db),
+) -> dict:
+    try:
+        return build_customer_primary_account_transactions(
+            db,
+            customer_key=customer_key,
+            limit=limit,
+        )
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@app.get("/api/graph/node-neighbors")
+def graph_node_neighbors(
+    node_id: str,
+    limit: int = 50,
+    offset: int = 0,
+    exclude_node_ids: str | None = None,
+    include_surrogates: bool = True,
+    include_ofac_matches: bool = True,
+    include_txn_flow: bool = True,
+    db: Session = Depends(get_db),
+) -> dict:
+    parsed_excludes = {
+        v.strip()
+        for v in (exclude_node_ids or "").split(",")
+        if v and v.strip()
+    }
+    try:
+        return build_node_neighbors_payload(
+            db,
+            node_id=node_id,
+            limit=limit,
+            offset=offset,
+            exclude_node_ids=parsed_excludes,
+            include_surrogates=include_surrogates,
+            include_ofac_matches=include_ofac_matches,
+            include_txn_flow=include_txn_flow,
+        )
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 
 @app.get("/api-browser", response_class=HTMLResponse)

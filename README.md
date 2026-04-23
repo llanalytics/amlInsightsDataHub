@@ -20,6 +20,8 @@ Dimensions:
 - `dh_dim_customer`
 - `dh_dim_associated_party`
 - `dh_dim_account`
+- `dh_dim_branch`
+- `dh_dim_branch`
 - `dh_dim_sub_account`
 - `dh_dim_country`
 - `dh_dim_currency`
@@ -185,6 +187,10 @@ No-auth JSON endpoints:
 - `GET /api/dq/rules` (supports `limit`, `active_only`, `entity_name`)
 - `GET /api/jobs/batch-results` (supports `limit`)
 - `GET /api/dq/violations` (supports `limit`)
+- `GET /api/graph/summary` (supports `include_surrogates`, `include_ofac_matches`, `include_txn_flow`)
+- `GET /api/graph/elements` (supports `include_surrogates`, `include_ofac_matches`, `include_txn_flow`)
+- `GET /api/graph/customer/{customer_key}` (supports `hops`, `max_nodes`, `max_edges`, plus graph include flags)
+- `GET /api/graph/customer/{customer_key}/summary` (supports `hops`, plus graph include flags)
 
 Related endpoints:
 - `GET /api/jobs/runs`
@@ -193,6 +199,14 @@ Related endpoints:
 
 Lightweight API browser UI:
 - `GET /api-browser`
+
+Graph snapshot export:
+- `python3 scripts/build_graph_snapshot.py`
+- Optional flags:
+  - `--output /path/to/graph_snapshot.json`
+  - `--no-include-surrogates`
+  - `--no-include-ofac-matches`
+  - `--no-include-txn-flow`
 
 ## Scheduling
 

@@ -4,3 +4,6 @@
 # Keep sample data tracked
 !/data/sample/
 !/data/sample/**
+
+# Local environment config
+.env

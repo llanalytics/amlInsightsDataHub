@@ -16,3 +16,5 @@ Sub_Account_Type,Branch,Branch channel,true
 Sub_Account_Type,Online,Online channel,true
 Transaction_Direction,Inbound,Inbound transaction,true
 Transaction_Direction,Outbound,Outbound transaction,true
+Branch_Type,Standard,Standard branch type,true
+Branch_Type,ATM,ATM branch type,true

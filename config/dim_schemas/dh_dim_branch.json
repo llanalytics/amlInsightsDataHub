@@ -1,0 +1,54 @@
+{
+  "required": ["branch_key", "branch_type"],
+  "properties": {
+    "branch_key": {
+      "type": "string",
+      "maxLength": 100,
+      "dq": {
+        "not_null": true
+      }
+    },
+    "branch_type": {
+      "type": "string",
+      "maxLength": 80,
+      "dq": {
+        "not_null": true
+      }
+    },
+    "address_line_1": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "address_line_2": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "address_city": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "address_state_province": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "address_postal_code": {
+      "type": "string",
+      "maxLength": 20,
+      "dq": {
+        "regex": "^[A-Za-z0-9 -]{3,20}$"
+      }
+    },
+    "address_country_code": {
+      "type": "string",
+      "maxLength": 2,
+      "dq": {
+        "regex": "^[A-Z]{2}$",
+        "dimension_lookup": {
+          "table": "dh_dim_country",
+          "field": "country_code_2"
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}
