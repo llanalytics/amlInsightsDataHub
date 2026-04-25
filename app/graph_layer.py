@@ -1118,6 +1118,284 @@ def build_node_neighbors_payload(
     }
 
 
+
+
+def _node_ids_within_hops(payload: dict[str, Any], seed_node_id: str, hops: int) -> set[str]:
+    elements = payload.get("elements") if isinstance(payload, dict) else None
+    nodes = elements.get("nodes") if isinstance(elements, dict) else []
+    edges = elements.get("edges") if isinstance(elements, dict) else []
+    node_ids = {
+        str((n.get("data", {}) or {}).get("id", ""))
+        for n in (nodes if isinstance(nodes, list) else [])
+        if isinstance(n, dict)
+    }
+    if seed_node_id not in node_ids:
+        return set()
+
+    adj: dict[str, set[str]] = {nid: set() for nid in node_ids}
+    for e in (edges if isinstance(edges, list) else []):
+        if not isinstance(e, dict):
+            continue
+        d = e.get("data")
+        if not isinstance(d, dict):
+            continue
+        src = str(d.get("source") or "")
+        dst = str(d.get("target") or "")
+        if src in adj and dst in adj:
+            adj[src].add(dst)
+            adj[dst].add(src)
+
+    max_hops = max(0, int(hops))
+    visited: set[str] = {seed_node_id}
+    frontier: set[str] = {seed_node_id}
+    for _ in range(max_hops):
+        nxt: set[str] = set()
+        for cur in frontier:
+            for nb in adj.get(cur, set()):
+                if nb in visited:
+                    continue
+                visited.add(nb)
+                nxt.add(nb)
+        if not nxt:
+            break
+        frontier = nxt
+    return visited
+
+
+def build_transaction_filter_catalog(db: Session) -> dict[str, Any]:
+    meta = _transaction_type_metadata(db)
+    directions = sorted({str(v.get("direction") or "").strip() for v in meta.values() if str(v.get("direction") or "").strip()})
+    mechanisms = sorted({str(v.get("mechanism") or "").strip() for v in meta.values() if str(v.get("mechanism") or "").strip()})
+    aml_classifications = sorted({str(v.get("aml_classification") or "").strip() for v in meta.values() if str(v.get("aml_classification") or "").strip()})
+    aml_sub_classifications = sorted({str(v.get("aml_sub_classification") or "").strip() for v in meta.values() if str(v.get("aml_sub_classification") or "").strip()})
+
+    country_codes_2 = sorted(
+        {
+            str(r[0]).strip().upper()
+            for r in db.execute(select(DHDimCountry.country_code_2).where(DHDimCountry.is_current.is_(True))).all()
+            if str(r[0] or "").strip()
+        }
+    )
+
+    return {
+        "directions": directions,
+        "mechanisms": mechanisms,
+        "aml_classifications": aml_classifications,
+        "aml_sub_classifications": aml_sub_classifications,
+        "country_codes_2": country_codes_2,
+        "transaction_type_count": len(meta),
+    }
+
+
+def _transaction_type_metadata(db: Session) -> dict[str, dict[str, str]]:
+    out: dict[str, dict[str, str]] = {}
+    for row in _is_current_rows(db, DHDimTransactionType):
+        attrs = _attrs_json(row)
+        out[str(row.transaction_type_code)] = {
+            "aml_classification": str(attrs.get("aml_classification") or "").strip(),
+            "aml_sub_classification": str(attrs.get("aml_sub_classification") or "").strip(),
+            "direction": str(attrs.get("direction") or "").strip(),
+            "mechanism": str(attrs.get("mechanism") or "").strip(),
+        }
+    return out
+
+
+def build_exposure_cash_transactions(
+    db: Session,
+    node_id: str,
+    hops: int = 2,
+    limit: int = 500,
+    outside_country_code_2: str | None = None,
+    direction: str | None = None,
+    aml_classification_contains: str | None = None,
+    mechanism_contains: str | None = None,
+    include_surrogates: bool = True,
+    include_ofac_matches: bool = True,
+    include_txn_flow: bool = True,
+) -> dict[str, Any]:
+    seed = str(node_id or "").strip()
+    if not seed:
+        raise KeyError("Seed node id is required.")
+
+    graph_payload = build_seed_graph_payload(
+        db,
+        node_id=seed,
+        hops=hops,
+        max_nodes=2000,
+        max_edges=8000,
+        include_surrogates=include_surrogates,
+        include_ofac_matches=include_ofac_matches,
+        include_txn_flow=include_txn_flow,
+    )
+
+    elements = graph_payload.get("elements") if isinstance(graph_payload, dict) else None
+    nodes = elements.get("nodes") if isinstance(elements, dict) else []
+    nearby_node_ids = _node_ids_within_hops(graph_payload, seed, hops=max(0, int(hops)))
+
+    account_keys: set[str] = set()
+    counterparty_keys: set[str] = set()
+    for node in (nodes if isinstance(nodes, list) else []):
+        if not isinstance(node, dict):
+            continue
+        data = node.get("data")
+        if not isinstance(data, dict):
+            continue
+        nid = str(data.get("id") or "")
+        if nid not in nearby_node_ids:
+            continue
+        node_type = str(data.get("node_type") or "")
+        business_key = str(data.get("business_key") or "")
+        if node_type == "Account" and business_key:
+            account_keys.add(business_key)
+        if node_type == "CounterpartyAccount" and business_key:
+            counterparty_keys.add(business_key)
+
+    if not account_keys and not counterparty_keys:
+        return {
+            "seed_node_id": seed,
+            "hops": int(hops),
+            "row_count": 0,
+            "summary": {
+                "total_amount": 0.0,
+                "distinct_account_count": 0,
+                "distinct_counterparty_count": 0,
+                "outside_country_code_2": (outside_country_code_2 or "").strip().upper() or None,
+                "direction_filter": (direction or "").strip().lower() or None,
+                "aml_classification_contains": (aml_classification_contains or "").strip() or None,
+                "mechanism_contains": (mechanism_contains or "").strip() or None,
+            },
+            "rows": [],
+        }
+
+    q = select(
+        DHFactCash.transaction_key,
+        DHFactCash.transaction_ts,
+        DHFactCash.account_key,
+        DHFactCash.transaction_type_code,
+        DHFactCash.amount,
+        DHFactCash.country_code_2,
+        DHFactCash.currency_code,
+        DHFactCash.counterparty_account_key,
+    )
+
+    conditions = []
+    if account_keys and counterparty_keys:
+        conditions.append(
+            (DHFactCash.account_key.in_(sorted(account_keys)))
+            | (DHFactCash.counterparty_account_key.in_(sorted(counterparty_keys)))
+        )
+    elif account_keys:
+        conditions.append(DHFactCash.account_key.in_(sorted(account_keys)))
+    else:
+        conditions.append(DHFactCash.counterparty_account_key.in_(sorted(counterparty_keys)))
+
+    country_ex = (outside_country_code_2 or "").strip().upper()
+    if country_ex:
+        conditions.append(func.upper(func.coalesce(DHFactCash.country_code_2, "")) != country_ex)
+
+    for cond in conditions:
+        q = q.where(cond)
+
+    safe_limit = max(1, min(int(limit), 10000))
+    fact_rows = db.execute(
+        q.order_by(DHFactCash.transaction_ts.desc(), DHFactCash.transaction_key.desc()).limit(safe_limit)
+    ).all()
+
+    txn_type_meta = _transaction_type_metadata(db)
+
+    direction_filter = (direction or "").strip().lower()
+    aml_contains = (aml_classification_contains or "").strip().lower()
+    mechanism_filter = (mechanism_contains or "").strip().lower()
+
+    filtered_rows = []
+    for row in fact_rows:
+        ttc = str(row.transaction_type_code or "")
+        meta = txn_type_meta.get(ttc, {})
+        dir_val = str(meta.get("direction") or "").strip().lower()
+        aml_val = str(meta.get("aml_classification") or "").strip()
+        mechanism_val = str(meta.get("mechanism") or "").strip()
+        if direction_filter and dir_val != direction_filter:
+            continue
+        if aml_contains and aml_contains not in aml_val.lower():
+            continue
+        if mechanism_filter and mechanism_filter not in mechanism_val.lower():
+            continue
+        filtered_rows.append((row, meta))
+
+    cp_name_map: dict[str, str] = {}
+    cp_keys = {str(r.counterparty_account_key or "") for r, _ in filtered_rows if str(r.counterparty_account_key or "")}
+    if cp_keys:
+        for row in db.execute(
+            select(DHDimCounterpartyAccount).where(
+                DHDimCounterpartyAccount.counterparty_account_key.in_(sorted(cp_keys)),
+                DHDimCounterpartyAccount.is_current.is_(True),
+            )
+        ).scalars().all():
+            attrs = _attrs_json(row)
+            cp_name_map[str(row.counterparty_account_key)] = str(attrs.get("counterparty_name") or row.counterparty_account_key)
+
+    out_rows: list[dict[str, Any]] = []
+    total_amount = 0.0
+    out_account_keys: set[str] = set()
+    out_counterparty_keys: set[str] = set()
+    countries: dict[str, int] = {}
+    for row, meta in filtered_rows:
+        cp_key = str(row.counterparty_account_key or "")
+        acct_key = str(row.account_key or "")
+        ccy = str(row.currency_code or "")
+        ctry = str(row.country_code_2 or "")
+        amt = float(row.amount or 0.0)
+        total_amount += amt
+        if acct_key:
+            out_account_keys.add(acct_key)
+        if cp_key:
+            out_counterparty_keys.add(cp_key)
+        if ctry:
+            countries[ctry] = countries.get(ctry, 0) + 1
+        out_rows.append(
+            {
+                "transaction_key": str(row.transaction_key or ""),
+                "transaction_date": row.transaction_ts.date().isoformat() if row.transaction_ts else None,
+                "transaction_ts": row.transaction_ts.isoformat() if row.transaction_ts else None,
+                "account_key": acct_key,
+                "counterparty_account_key": cp_key,
+                "counterparty_name": cp_name_map.get(cp_key, cp_key),
+                "transaction_type_code": str(row.transaction_type_code or ""),
+                "aml_classification": str(meta.get("aml_classification") or "Unknown"),
+                "aml_sub_classification": str(meta.get("aml_sub_classification") or ""),
+                "direction": str(meta.get("direction") or "unknown"),
+                "mechanism": str(meta.get("mechanism") or ""),
+                "amount": amt,
+                "currency_code": ccy,
+                "country_code_2": ctry,
+                "matched_by": (
+                    "account"
+                    if acct_key in account_keys and cp_key not in counterparty_keys
+                    else "counterparty"
+                    if cp_key in counterparty_keys and acct_key not in account_keys
+                    else "account_or_counterparty"
+                ),
+            }
+        )
+
+    top_countries = sorted(countries.items(), key=lambda item: item[1], reverse=True)[:10]
+
+    return {
+        "seed_node_id": seed,
+        "hops": int(hops),
+        "row_count": len(out_rows),
+        "summary": {
+            "total_amount": total_amount,
+            "distinct_account_count": len(out_account_keys),
+            "distinct_counterparty_count": len(out_counterparty_keys),
+            "top_countries": [{"country_code_2": c, "txn_count": n} for c, n in top_countries],
+            "outside_country_code_2": country_ex or None,
+            "direction_filter": direction_filter or None,
+            "aml_classification_contains": aml_contains or None,
+            "mechanism_contains": mechanism_filter or None,
+        },
+        "rows": out_rows,
+    }
 def build_customer_primary_account_transactions(
     db: Session,
     customer_key: str,

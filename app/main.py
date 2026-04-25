@@ -12,9 +12,11 @@ from app.graph_layer import (
     build_customer_primary_account_transactions,
     build_customer_graph_payload,
     build_customer_graph_summary,
+    build_exposure_cash_transactions,
     build_graph_payload,
     build_node_neighbors_payload,
     build_seed_graph_payload,
+    build_transaction_filter_catalog,
     search_exposure_seeds,
     search_customer_seeds,
 )
@@ -312,6 +314,13 @@ def graph_customer_summary(
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 
+@app.get("/api/graph/transaction-filter-catalog")
+def graph_transaction_filter_catalog(
+    db: Session = Depends(get_db),
+) -> dict:
+    return build_transaction_filter_catalog(db)
+
+
 @app.get("/api/graph/exposure")
 def graph_exposure(
     node_id: str,
@@ -353,6 +362,39 @@ def graph_customer_transactions(
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
+
+
+
+@app.get("/api/graph/exposure/transactions")
+def graph_exposure_transactions(
+    node_id: str,
+    hops: int = 2,
+    limit: int = 500,
+    outside_country_code_2: str | None = None,
+    direction: str | None = None,
+    aml_classification_contains: str | None = None,
+    mechanism_contains: str | None = None,
+    include_surrogates: bool = True,
+    include_ofac_matches: bool = True,
+    include_txn_flow: bool = True,
+    db: Session = Depends(get_db),
+) -> dict:
+    try:
+        return build_exposure_cash_transactions(
+            db,
+            node_id=node_id,
+            hops=hops,
+            limit=limit,
+            outside_country_code_2=outside_country_code_2,
+            direction=direction,
+            aml_classification_contains=aml_classification_contains,
+            mechanism_contains=mechanism_contains,
+            include_surrogates=include_surrogates,
+            include_ofac_matches=include_ofac_matches,
+            include_txn_flow=include_txn_flow,
+        )
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 @app.get("/api/graph/node-neighbors")
 def graph_node_neighbors(
