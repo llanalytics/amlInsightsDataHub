@@ -18,6 +18,7 @@ ACTION="${2:-auto}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 ENV_FILE="$PROJECT_ROOT/.env"
+PATH="$PROJECT_ROOT/.venv/bin:$PATH"
 
 BLUE='\033[0;34m'
 GREEN='\033[0;32m'
@@ -42,6 +43,11 @@ if [ -f "$ENV_FILE" ]; then
     value="${line#*=}"
     key="$(printf '%s' "$key" | tr -d '[:space:]')"
     value="${value%$'\r'}"
+    if [[ "$value" == \"*\" && "$value" == *\" ]]; then
+      value="${value:1:${#value}-2}"
+    elif [[ "$value" == \'*\' && "$value" == *\' ]]; then
+      value="${value:1:${#value}-2}"
+    fi
 
     case "$key" in
       DATA_HUB_DATABASE_URL)

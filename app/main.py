@@ -13,6 +13,7 @@ from app.graph_layer import (
     build_customer_graph_payload,
     build_customer_graph_summary,
     build_exposure_cash_transactions,
+    build_global_cash_transactions,
     build_graph_payload,
     build_node_neighbors_payload,
     build_seed_graph_payload,
@@ -371,6 +372,17 @@ def graph_exposure_transactions(
     hops: int = 2,
     limit: int = 500,
     outside_country_code_2: str | None = None,
+    outside_counterparty_jurisdiction: str | None = None,
+    counterparty_jurisdiction: str | None = None,
+    outside_customer_country_code: str | None = None,
+    customer_country_code: str | None = None,
+    outside_branch_country_code: str | None = None,
+    branch_country_code: str | None = None,
+    account_type_contains: str | None = None,
+    account_name_contains: str | None = None,
+    customer_segment_contains: str | None = None,
+    customer_business_unit: str | None = None,
+    branch_type_contains: str | None = None,
     direction: str | None = None,
     aml_classification_contains: str | None = None,
     mechanism_contains: str | None = None,
@@ -386,6 +398,17 @@ def graph_exposure_transactions(
             hops=hops,
             limit=limit,
             outside_country_code_2=outside_country_code_2,
+            outside_counterparty_jurisdiction=outside_counterparty_jurisdiction,
+            counterparty_jurisdiction=counterparty_jurisdiction,
+            outside_customer_country_code=outside_customer_country_code,
+            customer_country_code=customer_country_code,
+            outside_branch_country_code=outside_branch_country_code,
+            branch_country_code=branch_country_code,
+            account_type_contains=account_type_contains,
+            account_name_contains=account_name_contains,
+            customer_segment_contains=customer_segment_contains,
+            customer_business_unit=customer_business_unit,
+            branch_type_contains=branch_type_contains,
             direction=direction,
             aml_classification_contains=aml_classification_contains,
             mechanism_contains=mechanism_contains,
@@ -395,6 +418,29 @@ def graph_exposure_transactions(
         )
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@app.get("/api/graph/exposure/transactions/global")
+def graph_global_exposure_transactions(
+    limit: int = 10000,
+    counterparty_jurisdiction: str | None = None,
+    outside_counterparty_jurisdiction: str | None = None,
+    outside_country_code_2: str | None = None,
+    direction: str | None = None,
+    aml_classification_contains: str | None = None,
+    mechanism_contains: str | None = None,
+    db: Session = Depends(get_db),
+) -> dict:
+    return build_global_cash_transactions(
+        db,
+        limit=limit,
+        counterparty_jurisdiction=counterparty_jurisdiction,
+        outside_counterparty_jurisdiction=outside_counterparty_jurisdiction,
+        outside_country_code_2=outside_country_code_2,
+        direction=direction,
+        aml_classification_contains=aml_classification_contains,
+        mechanism_contains=mechanism_contains,
+    )
 
 @app.get("/api/graph/node-neighbors")
 def graph_node_neighbors(
